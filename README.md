@@ -14,7 +14,8 @@ TODO: Write a compelling/creative/informative project description / summary
 
 ### Prerequisites
 
-TODO: List what a user needs to have installed before running the installation instructions below (e.g., git, which versions of Ruby/Rails)
+* Python3
+* Modules detailed in [requirements.txt](https://github.com/WSUCptSCapstone-F23-S24/wsub-pythondesktopapp/blob/master/application/requirements.txt)
 
 ### Add-ons
 
@@ -22,8 +23,6 @@ TODO: List which add-ons are included in the project, and the purpose each add-o
 
 ### Installation Steps
 
-TODO: Describe the installation process (making sure you mention `bundle install`).
-Instructions need to be such that a user can just copy/paste the commands to get things set up and running. 
 
 
 ## Functionality
@@ -40,8 +39,8 @@ Provide steps to reproduce the problem and/or name a file or a function where th
 ## Additional Documentation
 
 TODO: Provide links to additional documentation that may exist in the repo, e.g.,
-  * Sprint reports
-  * User links
+  * [Sprint reports](https://github.com/WSUCptSCapstone-F23-S24/wsub-pythondesktopapp/tree/master/documentation/sprint_reports)
+  * User Links: [Brayden Groshong](https://github.com/braymuk), [Tomer Zangi](https://github.com/Tomer-Zangi), [Jack Leeper](https://github.com/TheLargeCheddar)
 
 ## License
 
