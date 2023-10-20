@@ -77,6 +77,26 @@ class Calculations:
 
         else:
             return 0
+        
+        
+    @staticmethod
+    def calculatePercentCO2(calibration, sample, zero):
+        """
+        Calculates and returns the %CO2 concentration.
+        """
+        
+        percentCO2 = calibration * (sample - zero)
+        return percentCO2
+    
+    
+    @staticmethod
+    def calculateUbarCO2(percentCO2):
+        """
+        Calculates and returns the ubar CO2 concentration from the %CO2.
+        """
+        
+        ubarCO2 = percentCO2 * 9200
+        return ubarCO2
 
 
     
