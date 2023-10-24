@@ -133,7 +133,7 @@ class LabView(QtWidgets.QMainWindow):
         self.o2Concentration = 0
 
         self.co2Zero44Reading = 0
-        self.co2Zero45Reading = 0
+        
 
         self.keepCals = False
         self.folder_path = ''
@@ -207,31 +207,13 @@ class LabView(QtWidgets.QMainWindow):
         # Initializing all the graphs
         self.graph1CheckBox = QtWidgets.QCheckBox("Mass 32",self)
         self.graph1CheckBox.setStyleSheet("color: #800000")
-        self.graph2CheckBox = QtWidgets.QCheckBox("Mass 34",self)
-        self.graph2CheckBox.setStyleSheet("color: #9A6324")
-        self.graph3CheckBox = QtWidgets.QCheckBox("Mass 36",self)
-        self.graph3CheckBox.setStyleSheet("color: #808000")
-        self.graph4CheckBox = QtWidgets.QCheckBox("Mass 44",self)
-        self.graph4CheckBox.setStyleSheet("color: #4363d8")
-        self.graph5CheckBox = QtWidgets.QCheckBox("Mass 45",self)
-        self.graph5CheckBox.setStyleSheet("color: #e6194B")
-        self.graph6CheckBox = QtWidgets.QCheckBox("Mass 46",self)
-        self.graph6CheckBox.setStyleSheet("color: #911eb4")
-        self.graph7CheckBox = QtWidgets.QCheckBox("Mass 47",self)
-        self.graph7CheckBox.setStyleSheet("color: #42d4f4")
-        self.graph8CheckBox = QtWidgets.QCheckBox("Mass 49",self)
-        self.graph8CheckBox.setStyleSheet("color: #f58231")
+        self.graph2CheckBox = QtWidgets.QCheckBox("Mass 44",self)
+        self.graph2CheckBox.setStyleSheet("color: #4363d8")
         
         # Initially all the graphs checkboxes should be checked.
         self.graph1CheckBox.setChecked(False) 
         self.graph2CheckBox.setChecked(False) 
-        self.graph3CheckBox.setChecked(False) 
-        self.graph4CheckBox.setChecked(False) 
-        self.graph5CheckBox.setChecked(False) 
-        self.graph6CheckBox.setChecked(False) 
-        self.graph7CheckBox.setChecked(False) 
-        self.graph8CheckBox.setChecked(False) 
-
+        
         # Creating vertical layout for check boxes.
         self.checkBoxVLayout = QtWidgets.QVBoxLayout()
         self.checkBoxVLayout.setSpacing(10)
@@ -239,12 +221,7 @@ class LabView(QtWidgets.QMainWindow):
         # Adding check boxes to the checkBoxWidget layout
         self.checkBoxVLayout.addWidget(self.graph1CheckBox)
         self.checkBoxVLayout.addWidget(self.graph2CheckBox)
-        self.checkBoxVLayout.addWidget(self.graph3CheckBox)
-        self.checkBoxVLayout.addWidget(self.graph4CheckBox)
-        self.checkBoxVLayout.addWidget(self.graph5CheckBox)
-        self.checkBoxVLayout.addWidget(self.graph6CheckBox)
-        self.checkBoxVLayout.addWidget(self.graph7CheckBox)
-        self.checkBoxVLayout.addWidget(self.graph8CheckBox)
+       
         
         #############################################################################################
 
@@ -623,7 +600,6 @@ class LabView(QtWidgets.QMainWindow):
         self.o2Label = QtWidgets.QLabel("O2")
 
         self.co2Zero44Label =  QtWidgets.QLabel("CO2 Zero\n(Mass 44)")
-        self.co2Zero45Label =  QtWidgets.QLabel("CO2 Zero\n(Mass 45)")
 
         self.blankButton = Button("Blank", 120, 26)
         self.extractButton = Button("Extract", 120, 26)
@@ -634,7 +610,6 @@ class LabView(QtWidgets.QMainWindow):
         # Creating a QGrid Layout
         self.co2o2GridLayout = QtWidgets.QGridLayout()
         self.co2o2GridLayout.addWidget(self.co2Zero44Label, 1, 2, 2, 1, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.co2Zero45Label, 1, 3, 2, 1, alignment=QtCore.Qt.AlignCenter)
         self.co2o2GridLayout.addWidget(self.co2ZeroButton, 2, 1, alignment=QtCore.Qt.AlignCenter)
         self.co2o2GridLayout.addWidget(self.co2ZeroLineEdit1, 2, 2, alignment=QtCore.Qt.AlignCenter)
         self.co2o2GridLayout.addWidget(self.co2ZeroLineEdit2, 2, 3, alignment=QtCore.Qt.AlignCenter)
@@ -771,26 +746,8 @@ class LabView(QtWidgets.QMainWindow):
         self.curve1 = Curve("Curve 1", [], pg.mkPen(color="#800000", width=4), self.realTimeGraph)
         self.curve1.plotCurve()
 
-        self.curve2 = Curve("Curve 2", [], pg.mkPen(color="#9A6324", width=4), self.realTimeGraph)
+        self.curve2 = Curve("Curve 2", [], pg.mkPen(color="#4363d8", width=4), self.realTimeGraph)
         self.curve2.plotCurve()
-
-        self.curve3 = Curve("Curve 3", [], pg.mkPen(color="#808000", width=4), self.realTimeGraph)
-        self.curve3.plotCurve()
-
-        self.curve4 = Curve("Curve 4", [], pg.mkPen(color="#4363d8", width=4), self.realTimeGraph)
-        self.curve4.plotCurve()
-
-        self.curve5 = Curve("Curve 5", [], pg.mkPen(color="#e6194B", width=4), self.realTimeGraph)
-        self.curve5.plotCurve()
-
-        self.curve6 = Curve("Curve 6", [], pg.mkPen(color="#911eb4", width=4), self.realTimeGraph)
-        self.curve6.plotCurve()
-
-        self.curve7 = Curve("Curve 7", [], pg.mkPen(color="#42d4f4", width=4), self.realTimeGraph)
-        self.curve7.plotCurve()
-
-        self.curve8 = Curve("Curve 8", [], pg.mkPen(color="#f58231", width=4), self.realTimeGraph)
-        self.curve8.plotCurve()
 
         # Initializing the mean bars.
         self.meanBar = pg.LinearRegionItem(values=(0, 1), orientation='vertical', brush=None, pen=None, hoverBrush=None, hoverPen=None, movable=True, bounds=None, span=(0, 1), swapMode='sort', clipItem=None)
@@ -826,12 +783,7 @@ class LabView(QtWidgets.QMainWindow):
 
         self.graph1CheckBox.stateChanged.connect(lambda: self.graphCheckStateChanged(self.graph1CheckBox, self.curve1))
         self.graph2CheckBox.stateChanged.connect(lambda: self.graphCheckStateChanged(self.graph2CheckBox, self.curve2))
-        self.graph3CheckBox.stateChanged.connect(lambda: self.graphCheckStateChanged(self.graph3CheckBox, self.curve3))
-        self.graph4CheckBox.stateChanged.connect(lambda: self.graphCheckStateChanged(self.graph4CheckBox, self.curve4))
-        self.graph5CheckBox.stateChanged.connect(lambda: self.graphCheckStateChanged(self.graph5CheckBox, self.curve5))
-        self.graph6CheckBox.stateChanged.connect(lambda: self.graphCheckStateChanged(self.graph6CheckBox, self.curve6))
-        self.graph7CheckBox.stateChanged.connect(lambda: self.graphCheckStateChanged(self.graph7CheckBox, self.curve7))
-        self.graph8CheckBox.stateChanged.connect(lambda: self.graphCheckStateChanged(self.graph8CheckBox, self.curve8))
+        
 
         # O2 Assay Buffer Zero Button connect method
         self.o2ZeroButton.clicked.connect(lambda: self.o2ZeroButtonPressed())
@@ -1115,12 +1067,7 @@ class LabView(QtWidgets.QMainWindow):
         
         self.curve1.updateDataPoints(x, y_value[0])
         self.curve2.updateDataPoints(x, y_value[1])
-        self.curve3.updateDataPoints(x, y_value[2])
-        self.curve4.updateDataPoints(x, y_value[3])
-        self.curve5.updateDataPoints(x, y_value[4])
-        self.curve6.updateDataPoints(x, y_value[5])
-        self.curve7.updateDataPoints(x, y_value[6])
-        self.curve8.updateDataPoints(x, y_value[7])
+        
         # print("Time taken plot all the points: ", time()-start)
 
     def changeGraphRange(self, x):
@@ -1353,7 +1300,7 @@ class LabView(QtWidgets.QMainWindow):
 
     def co2ZeroButtonPressed(self):
         """
-        Sets the CO2Zero Mass 44 and Mass 45 line edits with the mean value
+        Sets the CO2Zero Mass 44 line edits with the mean value
         from the mean bars from the respective curve.
         :param {_ : }
         :return -> None
@@ -1362,8 +1309,7 @@ class LabView(QtWidgets.QMainWindow):
         # Set mean value from mean bars for Mass 44 graph
         self.co2Zero44Reading = self.meanButtonPressed(self.co2ZeroLineEdit1, 3)
 
-        # Set mean value from mean bars for Mass 45 graph
-        self.co2Zero45Reading = self.meanButtonPressed(self.co2ZeroLineEdit2, 4)
+       
 
 
     def throwUndefined(self, lineEdit):
@@ -1837,12 +1783,6 @@ class LabView(QtWidgets.QMainWindow):
         
         self.curve1.updateDataPoints(x, y_value[0])
         self.curve2.updateDataPoints(x, y_value[1])
-        self.curve3.updateDataPoints(x, y_value[2])
-        self.curve4.updateDataPoints(x, y_value[3])
-        self.curve5.updateDataPoints(x, y_value[4])
-        self.curve6.updateDataPoints(x, y_value[5])
-        self.curve7.updateDataPoints(x, y_value[6])
-        self.curve8.updateDataPoints(x, y_value[7])
         # print("Time taken plot all the points: ", time()-start)
 
     def changeGraphRange(self, x):
@@ -2370,7 +2310,7 @@ class LabView(QtWidgets.QMainWindow):
         self.o2Concentration = 0
 
         self.co2Zero44Reading = 0
-        self.co2Zero45Reading = 0
+        
 
         # Reset shared data across different components of the application
         self.sharedData.fileList = []
@@ -2393,22 +2333,12 @@ class LabView(QtWidgets.QMainWindow):
 
         self.curve1.clear()
         self.curve2.clear()
-        self.curve3.clear()
-        self.curve4.clear()
-        self.curve5.clear()
-        self.curve6.clear()
-        self.curve7.clear()
-        self.curve8.clear()
+     
 
         # Uncheck all the graph boxes.
         self.graph1CheckBox.setChecked(False) 
         self.graph2CheckBox.setChecked(False) 
-        self.graph3CheckBox.setChecked(False) 
-        self.graph4CheckBox.setChecked(False) 
-        self.graph5CheckBox.setChecked(False) 
-        self.graph6CheckBox.setChecked(False) 
-        self.graph7CheckBox.setChecked(False) 
-        self.graph8CheckBox.setChecked(False) 
+
         
 # Main function
 app = QApplication([])
