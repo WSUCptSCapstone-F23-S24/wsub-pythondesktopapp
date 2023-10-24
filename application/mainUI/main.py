@@ -133,7 +133,7 @@ class LabView(QtWidgets.QMainWindow):
         self.o2Concentration = 0
 
         self.co2Zero44Reading = 0
-        self.co2Zero45Reading = 0
+        
 
         self.keepCals = False
         self.folder_path = ''
@@ -600,7 +600,6 @@ class LabView(QtWidgets.QMainWindow):
         self.o2Label = QtWidgets.QLabel("O2")
 
         self.co2Zero44Label =  QtWidgets.QLabel("CO2 Zero\n(Mass 44)")
-        self.co2Zero45Label =  QtWidgets.QLabel("CO2 Zero\n(Mass 45)")
 
         self.blankButton = Button("Blank", 120, 26)
         self.extractButton = Button("Extract", 120, 26)
@@ -611,7 +610,6 @@ class LabView(QtWidgets.QMainWindow):
         # Creating a QGrid Layout
         self.co2o2GridLayout = QtWidgets.QGridLayout()
         self.co2o2GridLayout.addWidget(self.co2Zero44Label, 1, 2, 2, 1, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.co2Zero45Label, 1, 3, 2, 1, alignment=QtCore.Qt.AlignCenter)
         self.co2o2GridLayout.addWidget(self.co2ZeroButton, 2, 1, alignment=QtCore.Qt.AlignCenter)
         self.co2o2GridLayout.addWidget(self.co2ZeroLineEdit1, 2, 2, alignment=QtCore.Qt.AlignCenter)
         self.co2o2GridLayout.addWidget(self.co2ZeroLineEdit2, 2, 3, alignment=QtCore.Qt.AlignCenter)
@@ -1302,7 +1300,7 @@ class LabView(QtWidgets.QMainWindow):
 
     def co2ZeroButtonPressed(self):
         """
-        Sets the CO2Zero Mass 44 and Mass 45 line edits with the mean value
+        Sets the CO2Zero Mass 44 line edits with the mean value
         from the mean bars from the respective curve.
         :param {_ : }
         :return -> None
@@ -1311,8 +1309,7 @@ class LabView(QtWidgets.QMainWindow):
         # Set mean value from mean bars for Mass 44 graph
         self.co2Zero44Reading = self.meanButtonPressed(self.co2ZeroLineEdit1, 3)
 
-        # Set mean value from mean bars for Mass 45 graph
-        self.co2Zero45Reading = self.meanButtonPressed(self.co2ZeroLineEdit2, 4)
+       
 
 
     def throwUndefined(self, lineEdit):
@@ -2313,7 +2310,7 @@ class LabView(QtWidgets.QMainWindow):
         self.o2Concentration = 0
 
         self.co2Zero44Reading = 0
-        self.co2Zero45Reading = 0
+        
 
         # Reset shared data across different components of the application
         self.sharedData.fileList = []
