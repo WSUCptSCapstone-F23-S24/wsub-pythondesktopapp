@@ -657,7 +657,23 @@ class LabView(QtWidgets.QMainWindow):
 
 
         ########################{CO2 Zero Blank Extract} AND {CO2 O2 LineEdit Layout} ###################
-
+        
+        # Module 1 concentration labels
+        self.percentCO2Label = QtWidgets.QLabel("%CO2")
+        self.ubarCO2Label = QtWidgets.QLabel("Ubar CO2")
+        
+        # Module 1 concentration text boxes
+        self.percentCO2LineEdit = LineEdit()
+        self.ubarCO2LineEdit = LineEdit()
+        
+        # Module 1 concentration grid layout
+        self.co2ConcentrationGridLayout = QtWidgets.QGridLayout()
+        self.co2ConcentrationGridLayout.addWidget(self.percentCO2Label, 1, 1, alignment=QtCore.Qt.AlignCenter)
+        self.co2ConcentrationGridLayout.addWidget(self.percentCO2LineEdit, 1, 2, alignment=QtCore.Qt.AlignCenter)
+        self.co2ConcentrationGridLayout.addWidget(self.ubarCO2Label, 2, 1, alignment=QtCore.Qt.AlignCenter)
+        self.co2ConcentrationGridLayout.addWidget(self.ubarCO2LineEdit, 2, 2, alignment=QtCore.Qt.AlignCenter)
+        
+        # unused leftover elements
         #Velocity and CO2 O2 Concentration Labels
         self.v0Label = QtWidgets.QLabel("V0")
         self.vcLabel = QtWidgets.QLabel("Vc")
@@ -725,7 +741,7 @@ class LabView(QtWidgets.QMainWindow):
         self.calculationButtonsFrameHLayout.addLayout(self.o2ZeroCo2CalGridLayout)
         self.calculationButtonsFrameHLayout.addLayout(self.biCarbCo2BiCarbCalGridLayout)
         self.calculationButtonsFrameHLayout.addLayout(self.co2o2GridLayout)
-        self.calculationButtonsFrameHLayout.addLayout(self.tableVelocityConcentrationAddPurgeHLayout)
+        self.calculationButtonsFrameHLayout.addLayout(self.co2ConcentrationGridLayout)
 
         self.calculationButtonsFrame.setLayout(self.calculationButtonsFrameHLayout)
         #################################################################################################
