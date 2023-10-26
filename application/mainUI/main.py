@@ -158,7 +158,7 @@ class LabView(QtWidgets.QMainWindow):
 
         # List of calibration line edits
         self.calibrationLineEdits = [self.temperatureLineEdit, self.o2CalibrationLineEdit, self.o2ZeroLineEdit, self.biCarbCo2LineEdit,
-                                    self.co2CalZeroLineEdit, self.co2Cal6ulLineEdit, self.co2Cal12ulLineEdit, self.co2Cal18ulLineEdit,
+                                    self.co2CalZeroLineEdit, self.co2Cal1ulLineEdit, self.co2Cal2ulLineEdit, self.co2Cal3ulLineEdit,
                                     self.biCarbCalZeroLineEdit, self.biCarbCal2ulLineEdit, self.biCarbCal4ulLineEdit,
                                     self.biCarbCal6ulLineEdit]
                                     
@@ -458,32 +458,32 @@ class LabView(QtWidgets.QMainWindow):
         # Initializing all the buttons
         self.o2ZeroButton = Button("O2 Zero", 120, 26)
         self.co2CalZeroButton = Button("CO2 Cal Zero", 120, 26)
-        self.co2Cal6ulButton = Button("CO2 Cal 6ul", 120, 26)
-        self.co2Cal12ulButton = Button("CO2 Cal 12ul", 120, 26)
-        self.co2Cal18ulButton = Button("CO2 Cal 18ul", 120, 26)
+        self.co2Cal1ulButton = Button("CO2 Cal 1ul", 120, 26)
+        self.co2Cal2ulButton = Button("CO2 Cal 2ul", 120, 26)
+        self.co2Cal3ulButton = Button("CO2 Cal 3ul", 120, 26)
 
         # Initializing line edits
         self.o2ZeroLineEdit = LineEdit()
         self.o2ZeroLineEdit.setReadOnly(False)
         self.co2CalZeroLineEdit = LineEdit()
-        self.co2Cal6ulLineEdit = LineEdit()
-        self.co2Cal12ulLineEdit = LineEdit()
-        self.co2Cal18ulLineEdit = LineEdit()
+        self.co2Cal1ulLineEdit = LineEdit()
+        self.co2Cal2ulLineEdit = LineEdit()
+        self.co2Cal3ulLineEdit = LineEdit()
         self.temperatureLineEdit = LineEdit()
 
         # Make line edits editable
         self.co2CalZeroLineEdit.setReadOnly(False)
-        self.co2Cal6ulLineEdit.setReadOnly(False)
-        self.co2Cal12ulLineEdit.setReadOnly(False)
-        self.co2Cal18ulLineEdit.setReadOnly(False)
+        self.co2Cal1ulLineEdit.setReadOnly(False)
+        self.co2Cal2ulLineEdit.setReadOnly(False)
+        self.co2Cal3ulLineEdit.setReadOnly(False)
         
         # make temperature LineEdit editable
         self.temperatureLineEdit.setReadOnly(False)
 
-        self.lineEditList.extend([self.o2ZeroLineEdit, self.co2CalZeroLineEdit, self.co2Cal6ulLineEdit, self.co2Cal12ulLineEdit, self.co2Cal18ulLineEdit, self.temperatureLineEdit])
+        self.lineEditList.extend([self.o2ZeroLineEdit, self.co2CalZeroLineEdit, self.co2Cal1ulLineEdit, self.co2Cal2ulLineEdit, self.co2Cal3ulLineEdit, self.temperatureLineEdit])
 
         # Initializing QLabels
-        self.o2AssayBufferZeroLabel = QtWidgets.QLabel("O2 Assay Buffer Zero")
+        self.o2AssayBufferZeroLabel = QtWidgets.QLabel("O2 Zero")
         self.temperatureLabel = QtWidgets.QLabel("Temperature (C)")
         self.assayBufferLabel = QtWidgets.QLabel("Assay Buffer")
 
@@ -495,12 +495,12 @@ class LabView(QtWidgets.QMainWindow):
         self.o2ZeroCo2CalGridLayout.addWidget(self.assayBufferLabel, 3, 1, 2, 2, alignment=QtCore.Qt.AlignCenter)
         self.o2ZeroCo2CalGridLayout.addWidget(self.co2CalZeroButton, 4, 1, alignment=QtCore.Qt.AlignCenter)
         self.o2ZeroCo2CalGridLayout.addWidget(self.co2CalZeroLineEdit, 4, 2, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal6ulButton, 5, 1, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal6ulLineEdit, 5, 2, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal12ulButton, 6, 1, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal12ulLineEdit, 6, 2, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal18ulButton, 7, 1, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal18ulLineEdit, 7, 2, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal1ulButton, 5, 1, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal1ulLineEdit, 5, 2, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal2ulButton, 6, 1, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal2ulLineEdit, 6, 2, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal3ulButton, 7, 1, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal3ulLineEdit, 7, 2, alignment=QtCore.Qt.AlignCenter)
         self.o2ZeroCo2CalGridLayout.addWidget(self.temperatureLabel, 8, 1, 1, 2, alignment=QtCore.Qt.AlignCenter)
         self.o2ZeroCo2CalGridLayout.addWidget(self.temperatureLineEdit, 9, 1, 1, 2, alignment=QtCore.Qt.AlignCenter) # Main Layout 1
         self.o2ZeroCo2CalGridLayout.setRowStretch(1,1)
@@ -632,7 +632,23 @@ class LabView(QtWidgets.QMainWindow):
 
 
         ########################{CO2 Zero Blank Extract} AND {CO2 O2 LineEdit Layout} ###################
-
+        
+        # Module 1 concentration labels
+        self.percentCO2Label = QtWidgets.QLabel("%CO2")
+        self.ubarCO2Label = QtWidgets.QLabel("Ubar CO2")
+        
+        # Module 1 concentration text boxes
+        self.percentCO2LineEdit = LineEdit()
+        self.ubarCO2LineEdit = LineEdit()
+        
+        # Module 1 concentration grid layout
+        self.co2ConcentrationGridLayout = QtWidgets.QGridLayout()
+        self.co2ConcentrationGridLayout.addWidget(self.percentCO2Label, 1, 1, alignment=QtCore.Qt.AlignCenter)
+        self.co2ConcentrationGridLayout.addWidget(self.percentCO2LineEdit, 1, 2, alignment=QtCore.Qt.AlignCenter)
+        self.co2ConcentrationGridLayout.addWidget(self.ubarCO2Label, 2, 1, alignment=QtCore.Qt.AlignCenter)
+        self.co2ConcentrationGridLayout.addWidget(self.ubarCO2LineEdit, 2, 2, alignment=QtCore.Qt.AlignCenter)
+        
+        # unused leftover elements
         #Velocity and CO2 O2 Concentration Labels
         self.v0Label = QtWidgets.QLabel("V0")
         self.vcLabel = QtWidgets.QLabel("Vc")
@@ -700,7 +716,7 @@ class LabView(QtWidgets.QMainWindow):
         self.calculationButtonsFrameHLayout.addLayout(self.o2ZeroCo2CalGridLayout)
         self.calculationButtonsFrameHLayout.addLayout(self.biCarbCo2BiCarbCalGridLayout)
         self.calculationButtonsFrameHLayout.addLayout(self.co2o2GridLayout)
-        self.calculationButtonsFrameHLayout.addLayout(self.tableVelocityConcentrationAddPurgeHLayout)
+        self.calculationButtonsFrameHLayout.addLayout(self.co2ConcentrationGridLayout)
 
         self.calculationButtonsFrame.setLayout(self.calculationButtonsFrameHLayout)
         #################################################################################################
@@ -796,15 +812,15 @@ class LabView(QtWidgets.QMainWindow):
 
         # CO2 Cal buttons connect method
         self.co2CalZeroButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.co2CalZeroLineEdit, 3, 0, 0))
-        self.co2Cal6ulButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.co2Cal6ulLineEdit, 3, 0, 1000))
-        self.co2Cal12ulButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.co2Cal12ulLineEdit, 3, 0, 2000))
-        self.co2Cal18ulButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.co2Cal18ulLineEdit, 3, 0, 3000))
+        self.co2Cal1ulButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.co2Cal1ulLineEdit, 3, 0, 1000))
+        self.co2Cal2ulButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.co2Cal2ulLineEdit, 3, 0, 2000))
+        self.co2Cal3ulButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.co2Cal3ulLineEdit, 3, 0, 3000))
 
         # CO2 Cal LineEdits connect text edited connet method
         self.co2CalZeroLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.co2CalZeroLineEdit, 3, 0, 0))
-        self.co2Cal6ulLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.co2Cal6ulLineEdit, 3, 0, 1000))
-        self.co2Cal12ulLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.co2Cal12ulLineEdit, 3, 0, 2000))
-        self.co2Cal18ulLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.co2Cal18ulLineEdit, 3, 0, 3000))
+        self.co2Cal1ulLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.co2Cal1ulLineEdit, 3, 0, 1000))
+        self.co2Cal2ulLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.co2Cal2ulLineEdit, 3, 0, 2000))
+        self.co2Cal3ulLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.co2Cal3ulLineEdit, 3, 0, 3000))
         
 
         # BiCarb Cal buttons connect method
