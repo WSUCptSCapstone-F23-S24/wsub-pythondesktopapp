@@ -46,7 +46,7 @@ Here's what went well:
 Here's what we'd like to improve:
    * Team communication 
    * Time management
-   * Clear requirements 
+   * Start with clear requirements 
   
 Here are changes we plan to implement in the next sprint:
    * Implement weekly team meetings with additional working sessions if needed.
