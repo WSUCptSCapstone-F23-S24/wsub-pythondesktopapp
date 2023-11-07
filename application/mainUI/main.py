@@ -93,7 +93,7 @@ class LabView(QtWidgets.QMainWindow):
         self.firstPoint = False
         self.yAllMax = None
         self.yAllMin = None
-        self.isYChnaged = False
+        self.isYChanged = False
         self.fileCheckThreadStarted = False
 
         self.application_state = "Idle"
@@ -212,7 +212,7 @@ class LabView(QtWidgets.QMainWindow):
         
         # Initially all the graphs checkboxes should be checked.
         self.graph1CheckBox.setChecked(False) 
-        self.graph2CheckBox.setChecked(False) 
+        self.graph2CheckBox.setChecked(False)
         
         # Creating vertical layout for check boxes.
         self.checkBoxVLayout = QtWidgets.QVBoxLayout()
@@ -392,9 +392,18 @@ class LabView(QtWidgets.QMainWindow):
         self.hclGraphVLayout.setContentsMargins(0, 40, 0, 0)
         self.hclGraphVLayout.addWidget(self.hclGraph)
 
+
+        self.uBarGraph = Graph(100,180)
+        self.uBarGraph.setLabel(axis='left', text = 'uBar')
+        self.uBarGraph.setLabel(axis='bottom', text = 'Time')
+        self.uBarGraph.getViewBox().wheelEvent = self.on_wheel_event
+        self.uBarGraphVLayout = QtWidgets.QVBoxLayout()
+        self.uBarGraphVLayout.setContentsMargins(0, 40, 0, 0)
+        self.uBarGraphVLayout.addWidget(self.uBarGraph)
+
         self.hclGraphBoxGridVLayout = QtWidgets.QVBoxLayout()
         self.hclGraphBoxGridVLayout.addLayout(self.hclBoxGridLayout)
-        self.hclGraphBoxGridVLayout.addLayout(self.hclGraphVLayout)
+        self.hclGraphBoxGridVLayout.addLayout(self.uBarGraphVLayout)
         ################################################################################################
 
 
@@ -765,6 +774,12 @@ class LabView(QtWidgets.QMainWindow):
         self.curve2 = Curve("Curve 2", [], pg.mkPen(color="#4363d8", width=4), self.realTimeGraph)
         self.curve2.plotCurve()
 
+        self.curve3 = Curve("Curve 1", [], pg.mkPen(color="#800000", width=4), self.uBarGraph)
+        self.curve3.plotCurve()
+
+        self.curve4 = Curve("Curve 2", [], pg.mkPen(color="#4363d8", width=4), self.uBarGraph)
+        self.curve4.plotCurve()
+
         # Initializing the mean bars.
         self.meanBar = pg.LinearRegionItem(values=(0, 1), orientation='vertical', brush=None, pen=None, hoverBrush=None, hoverPen=None, movable=True, bounds=None, span=(0, 1), swapMode='sort', clipItem=None)
         
@@ -902,7 +917,7 @@ class LabView(QtWidgets.QMainWindow):
         if self.realTimeGraph.graphInteraction == False:
             return
         elif self.realTimeGraph.graphInteraction == True:
-            self.isYChnaged = True
+            self.isYChanged = True
             self.realTimeGraph.graphInteraction = False
             
 
@@ -956,21 +971,32 @@ class LabView(QtWidgets.QMainWindow):
 
             # Step 2: Create a QThread object
             self.realTimePlotthread = QThread(parent=self)
+            self.uBarPlotthread = QThread(parent=self)
 
             # Step 3: Create a worker object
             self.worker = Worker(self)
+            self.worker2 = Worker(self)
             # Step 4: Move worker to the thread
             self.worker.moveToThread(self.realTimePlotthread)
+            self.worker2.moveToThread(self.uBarPlotthread)
 
             # Step 5: Connect signals and slots and start the stop watch
             self.realTimePlotthread.started.connect(self.worker.run)
             self.worker.finished.connect(self.realTimePlotthread.quit)
+
+            self.uBarPlotthread.started.connect(self.worker2.run)
+            self.worker2.finished.connect(self.uBarPlotthread.quit)
+
             # Connecting the signals to the methods.
             self.worker.plotEndBitSignal.connect(self.outOfDataCondition)
             self.worker.newDataPointSignal.connect(self.update_plot_data)
+            self.worker2.plotEndBitSignal.connect(self.outOfDataCondition)
+            self.worker2.newDataPointSignal.connect(self.update_plot_data)
 
             # Deleting the reference of the worker and the thread from the memory to free up space.
             self.worker.finished.connect(self.worker.deleteLater)
+            self.realTimePlotthread.finished.connect(self.realTimePlotthread.deleteLater)
+            self.worker2.finished.connect(self.worker2.deleteLater)
             self.realTimePlotthread.finished.connect(self.realTimePlotthread.deleteLater)
 
             # Step 6: Start the thread
@@ -980,6 +1006,11 @@ class LabView(QtWidgets.QMainWindow):
                 self.stopwatch.start()
 
             self.realTimePlotthread.start()
+            self.uBarPlotthread.start()
+
+            # Unhide graphs
+            self.curve3.unhide()
+            self.curve4.unhide()
 
             # Final resets
             self.startButton.setEnabled(False)
@@ -993,19 +1024,6 @@ class LabView(QtWidgets.QMainWindow):
         else:
             self.throwFolderNotSelectedException()
 
-
-    def throwOutOfDataException(self):
-        self.application_state = "Out_Of_Data"
-        dataExceptionDlg = Dialog(title="EXCEPTION!!", buttonCount=1, message="Application is out of data. Wait for sometime and then press Start or check instrument\nPress Ok to close the message.", parent=self)
-        dataExceptionDlg.buttonBox.accepted.connect(lambda: self.dataButtonDialogAccepted(dataExceptionDlg))
-        dataExceptionDlg.exec()
-
-    def outOfDataCondition(self):
-        self.throwOutOfDataException()
-
-    def dataButtonDialogAccepted(self, obj):
-        obj.close()
-        self.startButton.setEnabled(True)
 
     # change-file-reading
     # Start the thread as soon all files are read.
@@ -1026,192 +1044,7 @@ class LabView(QtWidgets.QMainWindow):
         
         else:
             pass
-
-    def update_plot_data(self, dataPoints):
-        """
-            Updates the real time plot after reading each row of data points from the file ONLY IF the pause bit is False.
-            :param {x_value : Float} -> x point value of the data point.
-            :param {y_value : Float} -> list of the y point values of the data point for different plots.
-            :return -> None
-        """
-
-        y_value = [[],[],[],[],[],[],[],[]]
-
-        # Getting the next data points from the list of all the points emitted by the worker thread.
-        while len(dataPoints) != 0:
-
-            # Popping the first data points
-            dataPoint = dataPoints.pop(0)
-
-            # Getting the x coordinate and list of y coordinates from the tuple
-            x, y = dataPoint
-
-            # Updating the data points in the singleton class.
-            self.sharedData.dataPoints[x] = y
-
-            # self.stopwatch.set_time(x)
-
-            for i in range(len(y_value)):
-                y_value[i].append(y[i])
-
-            # print(x_value, y_value)
-        # x_value, y_value = self.getNextPoint(self.dataObj)
-
-        # Updating the shared singleton plot data
         
-        # Updating all the curves
-        # start = time()
-        yAllMax = max(y)
-        yAllMin = min(y)
-
-        if self.yAllMin == None and self.yAllMax == None:
-            self.yAllMax = yAllMax
-            self.yAllMin = yAllMin
-            self.isYChnaged = True
-            
-        else:
-
-            if yAllMin < self.yAllMin:
-                self.yAllMin = yAllMin
-                self.isYChnaged = True
-
-            if yAllMax > self.yAllMax:
-                self.yAllMax = yAllMax
-                self.isYChnaged = True
-        
-        self.changeGraphRange(x)
-        
-        self.curve1.updateDataPoints(x, y_value[0])
-        self.curve2.updateDataPoints(x, y_value[1])
-        
-        # print("Time taken plot all the points: ", time()-start)
-
-    def changeGraphRange(self, x):
-        
-        # Changing X Axes Scale
-        self.currentXRange = self.realTimeGraph.getXAxisRange()
-
-        if x > self.currentXRange[1]:
-            
-            currentXScale = self.currentXRange[1] - self.currentXRange[0]
-            # print("CurrentXScale = ", currentXScale)
-            self.currentXRange = [self.currentXRange[0] + currentXScale, self.currentXRange[1] + currentXScale]
-            if not self.realTimeGraph.graphInteraction:
-                self.realTimeGraph.setNewXRange(self.currentXRange[0], self.currentXRange[1])
-
-        # Changing Y Axes Scale:
-
-        if self.isYChnaged:
-            if not self.realTimeGraph.graphInteraction:
-                offsetMin = (20*self.yAllMin)/100
-                offsetMax = (20*self.yAllMax)/100
-                self.realTimeGraph.setNewYRange(self.yAllMin-offsetMin, self.yAllMax+offsetMax)
-                self.isYChnaged = False
-    
-
-    def on_wheel_event(self,event, axis=1):
-        """
-            For disabling the scroll on the axes.
-        
-        """
-        event.ignore()
-
-    def startButtonDialogAccepted(self, dlg):
-        dlg.close()
-
-    def pauseResumeAction(self):
-
-        """
-            Pauses or Resumes the graph plot.
-            :param {_ : }
-            :return -> None
-        """
-        
-        # Pause the Plot
-        if self.pauseBit == False:
-            self.application_state = "Paused"
-            self.pauseBit = True
-            self.stopwatch.stop()
-            self.pauseResumeButton.setText("Resume")
-            self.pauseResumeButton.setToolTip('Resume the graph')
-
-        # Resume the Plot
-        elif self.pauseBit == True:
-            self.application_state = "Running"
-            self.pauseBit = False
-            self.stopwatch.start()
-            self.pauseResumeButton.setText("Pause")
-            self.pauseResumeButton.setToolTip('Pause the graph')
-
-    def graphCheckStateChanged(self, checkBox, curve):
-
-        """
-            Hide/Unhide the graph 8.
-            :param {_ : }
-            :return -> None
-        """
-
-        if checkBox.isChecked() == True:
-            curve.unhide()
-        elif checkBox.isChecked() != True:
-            curve.hide()
-
-
-    def OnEditedTemp(self):
-        
-        # check for numerical input
-        if (not self.isFloat(self.temperatureLineEdit.text()) and self.temperatureLineEdit.text() != ''):
-            #throw execption
-            self.throwFloatValueWarning()
-            return
-
-        self.temperature = float(self.temperatureLineEdit.text())
-            
-
-    def OnEditedO2AssayCal(self):
-        """
-        When the O2 Assay Buffer Zero line edit is edited, the O2ZeroButtonPressed method
-        is called with manualEntry set as true.
-        """
-
-        # check for numerical input
-        if (not self.isFloat(self.o2ZeroLineEdit.text()) and self.o2ZeroLineEdit.text() != ''):
-            #throw execption
-            self.throwFloatValueWarning()
-            return
-
-        # called method with manualEntry as True
-        self.o2ZeroButtonPressed(True)
-        
-        
-
-    def OnEditedCO2Cal(self, lineEdit, curve, graph, concentration):
-        """
-        When a CO2 cal line edit is edited, the GraphMeanButtonPressed method is called
-        with manualEntry set as true.
-        """
-
-        if (not self.isFloat(lineEdit.text()) and lineEdit.text() != ''):
-            #throw execption
-            self.throwFloatValueWarning()
-            return
-            
-        self.GraphMeanButtonPressed(lineEdit, curve, graph, concentration, True)
-
-    def OnEditedO2Cal(self):
-        
-        # check for numerical input
-        if (not self.isFloat(self.o2CalibrationLineEdit.text()) and self.o2CalibrationLineEdit.text() != ''):
-            #throw execption
-            self.throwFloatValueWarning()
-            return
-
-        if self.o2CalibrationLineEdit.text() == '':
-            self.o2Calibration = 0
-        else:
-            self.o2Calibration = float(self.o2CalibrationLineEdit.text())
-        
-
     def meanButtonPressed(self, lineEdit, curve):
         """
             When a mean button is pressed, sets the lineEdit with
@@ -1323,26 +1156,7 @@ class LabView(QtWidgets.QMainWindow):
         """
 
         # Set mean value from mean bars for Mass 44 graph
-        self.co2Zero44Reading = self.meanButtonPressed(self.co2ZeroLineEdit1, 3)
-
-       
-
-
-    def throwUndefined(self, lineEdit):
-        lineEdit.setText('undef')
-
-    def isFloat(self, string):
-        """
-        Checks if a string can be coverted to a float value
-        :param {string : string}
-        :return -> True or False
-        """
-        try:
-            float(string)
-            return True
-        except ValueError:
-            return False
-                                 
+        self.co2Zero44Reading = self.meanButtonPressed(self.co2ZeroLineEdit1, 3)                          
 
     def o2ZeroButtonPressed(self, manualEntry=False):
         """
@@ -1373,18 +1187,6 @@ class LabView(QtWidgets.QMainWindow):
 
         else:
             self.throwUndefined(self.o2CalibrationLineEdit)
-
-
-    def throwFloatValueWarning(self):
-        floatWarningDlg = Dialog(title="WARNING!", buttonCount=1, message="The entered value is not a numerical value!", parent=self)
-        floatWarningDlg.buttonBox.accepted.connect(lambda: self.floatWarningAccepted(floatWarningDlg))
-        floatWarningDlg.exec()
-        
-
-
-    def floatWarningAccepted(self, obj):
-        obj.close()
-
 
     def biCarbCo2ButtonPressed(self):
         """
@@ -1744,12 +1546,12 @@ class LabView(QtWidgets.QMainWindow):
             pass
 
     def update_plot_data(self, dataPoints):
-        """
-            Updates the real time plot after reading each row of data points from the file ONLY IF the pause bit is False.
-            :param {x_value : Float} -> x point value of the data point.
-            :param {y_value : Float} -> list of the y point values of the data point for different plots.
-            :return -> None
-        """
+    
+           # Updates the real time plot after reading each row of data points from the file ONLY IF the pause bit is False.
+           # :param {x_value : Float} -> x point value of the data point.
+           # :param {y_value : Float} -> list of the y point values of the data point for different plots.
+           # :return -> None
+    
 
         y_value = [[],[],[],[],[],[],[],[]]
 
@@ -1783,22 +1585,25 @@ class LabView(QtWidgets.QMainWindow):
         if self.yAllMin == None and self.yAllMax == None:
             self.yAllMax = yAllMax
             self.yAllMin = yAllMin
-            self.isYChnaged = True
+            self.isYChanged = True
             
         else:
 
             if yAllMin < self.yAllMin:
                 self.yAllMin = yAllMin
-                self.isYChnaged = True
+                self.isYChanged = True
 
             if yAllMax > self.yAllMax:
                 self.yAllMax = yAllMax
-                self.isYChnaged = True
+                self.isYChanged = True
         
         self.changeGraphRange(x)
         
         self.curve1.updateDataPoints(x, y_value[0])
         self.curve2.updateDataPoints(x, y_value[1])
+
+        self.curve3.updateDataPoints(x, y_value[0])
+        self.curve4.updateDataPoints(x, y_value[1])
         # print("Time taken plot all the points: ", time()-start)
 
     def changeGraphRange(self, x):
@@ -1813,15 +1618,22 @@ class LabView(QtWidgets.QMainWindow):
             self.currentXRange = [self.currentXRange[0] + currentXScale, self.currentXRange[1] + currentXScale]
             if not self.realTimeGraph.graphInteraction:
                 self.realTimeGraph.setNewXRange(self.currentXRange[0], self.currentXRange[1])
+            if not self.uBarGraph.graphInteraction:
+                self.uBarGraph.setNewXRange(self.currentXRange[0], self.currentXRange[1])
 
         # Changing Y Axes Scale:
 
-        if self.isYChnaged:
+        if self.isYChanged:
             if not self.realTimeGraph.graphInteraction:
                 offsetMin = (20*self.yAllMin)/100
                 offsetMax = (20*self.yAllMax)/100
                 self.realTimeGraph.setNewYRange(self.yAllMin-offsetMin, self.yAllMax+offsetMax)
-                self.isYChnaged = False
+                self.isYChanged = False
+            if not self.uBarGraph.graphInteraction:
+                offsetMin = (20*self.yAllMin)/100
+                offsetMax = (20*self.yAllMax)/100
+                self.uBarGraph.setNewYRange(self.yAllMin-offsetMin, self.yAllMax+offsetMax)
+                self.isYChanged = False
     
 
     def on_wheel_event(self,event, axis=1):
@@ -2286,7 +2098,7 @@ class LabView(QtWidgets.QMainWindow):
         self.firstPoint = False
         self.yAllMax = None
         self.yAllMin = None
-        self.isYChnaged = False
+        self.isYChanged = False
         self.fileCheckThreadStarted = False
         self.speedSlider.setSliderPosition(100)
         self.speedSlider.setValue(100)
@@ -2349,6 +2161,9 @@ class LabView(QtWidgets.QMainWindow):
 
         self.curve1.clear()
         self.curve2.clear()
+
+        self.curve3.clear()
+        self.curve4.clear()
      
 
         # Uncheck all the graph boxes.
