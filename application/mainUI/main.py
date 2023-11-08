@@ -344,25 +344,20 @@ class LabView(QtWidgets.QMainWindow):
         self.assayBufferBoxGridLayout.setHorizontalSpacing(10)
         ###############################################################################################
 
-        ###################################### QFormLayout for HCL #####################################
+        ###################################### QFormLayout for uBar and DuBar #####################################
 
         # Widgets to be added in the layout
-        self.intercept2Label = QtWidgets.QLabel("Intercept 2")
-        self.nmolLabel = QtWidgets.QLabel("(nmol/ml/mV)\n")
-        self.hclLabel = QtWidgets.QLabel("HCL")
+        self.uBarGraphLabel = QtWidgets.QLabel("Pressure")
+        self.DuBarGraphLabel = QtWidgets.QLabel("Pressure Derivative")
 
-        self.intercept2LineEdit = LineEdit()
-        self.nmolLineEdit = LineEdit()
+        self.uBarBoxGridLayout = QtWidgets.QGridLayout()
+        self.uBarBoxGridLayout.addWidget(self.emptyLabel, 1, 1, alignment=QtCore.Qt.AlignCenter)
+        self.uBarBoxGridLayout.addWidget(self.uBarGraphLabel, 2, 1, alignment=QtCore.Qt.AlignCenter)
 
-        self.lineEditList.extend([self.intercept2LineEdit, self.nmolLineEdit])
+        self.DuBarBoxGridLayout = QtWidgets.QGridLayout()
+        self.DuBarBoxGridLayout.addWidget(self.emptyLabel, 1, 1, alignment=QtCore.Qt.AlignCenter)
+        self.DuBarBoxGridLayout.addWidget(self.DuBarGraphLabel, 2, 1, alignment=QtCore.Qt.AlignCenter)
 
-        self.hclBoxGridLayout = QtWidgets.QGridLayout()
-        self.hclBoxGridLayout.addWidget(self.emptyLabel, 1, 1, alignment=QtCore.Qt.AlignCenter)
-        self.hclBoxGridLayout.addWidget(self.intercept2Label, 1, 2, alignment=QtCore.Qt.AlignCenter)
-        self.hclBoxGridLayout.addWidget(self.nmolLabel, 1, 3, alignment=QtCore.Qt.AlignCenter)
-        self.hclBoxGridLayout.addWidget(self.hclLabel, 2, 1, alignment=QtCore.Qt.AlignCenter)
-        self.hclBoxGridLayout.addWidget(self.intercept2LineEdit, 2, 2, alignment=QtCore.Qt.AlignCenter)
-        self.hclBoxGridLayout.addWidget(self.nmolLineEdit, 2, 3, alignment=QtCore.Qt.AlignCenter)
         ###############################################################################################
 
 
@@ -382,17 +377,9 @@ class LabView(QtWidgets.QMainWindow):
         self.assayBufferGraphBoxGridVLayout.addLayout(self.assayBufferGraphVLayout)
         #################################################################################################
 
-        ######################## {QFormLayout for HCL} AND {HCL Graph} #######################
-
-        self.hclGraph = Graph(100,180)
-        self.hclGraph.setLabel(axis='left', text = 'BiCarb (nmol/ml)')
-        self.hclGraph.setLabel(axis='bottom', text = 'Voltage (mV)')
-        self.hclGraph.getViewBox().wheelEvent = self.on_wheel_event
-        self.hclGraphVLayout = QtWidgets.QVBoxLayout()
-        self.hclGraphVLayout.setContentsMargins(0, 40, 0, 0)
-        self.hclGraphVLayout.addWidget(self.hclGraph)
 
 
+        ######################## {QFormLayout for uBar} AND {uBar Graph} #######################
         self.uBarGraph = Graph(100,180)
         self.uBarGraph.setLabel(axis='left', text = 'uBar')
         self.uBarGraph.setLabel(axis='bottom', text = 'Time')
@@ -401,37 +388,33 @@ class LabView(QtWidgets.QMainWindow):
         self.uBarGraphVLayout.setContentsMargins(0, 40, 0, 0)
         self.uBarGraphVLayout.addWidget(self.uBarGraph)
 
-        self.hclGraphBoxGridVLayout = QtWidgets.QVBoxLayout()
-        self.hclGraphBoxGridVLayout.addLayout(self.hclBoxGridLayout)
-        self.hclGraphBoxGridVLayout.addLayout(self.uBarGraphVLayout)
+        self.uBarGraphBoxGridVLayout = QtWidgets.QVBoxLayout()
+        self.uBarGraphBoxGridVLayout.addLayout(self.uBarBoxGridLayout)
+        self.uBarGraphBoxGridVLayout.addLayout(self.uBarGraphVLayout)
         ################################################################################################
 
+        ######################## {QFormLayout for DuBar} AND {DuBar Graph} #######################
+        self.DuBarGraph = Graph(100,180)
+        self.DuBarGraph.setLabel(axis='left', text = 'D[uBar]')
+        self.DuBarGraph.setLabel(axis='bottom', text = 'Time')
+        self.DuBarGraph.getViewBox().wheelEvent = self.on_wheel_event
+        self.DuBarGraphVLayout = QtWidgets.QVBoxLayout()
+        self.DuBarGraphVLayout.setContentsMargins(0, 40, 0, 0)
+        self.DuBarGraphVLayout.addWidget(self.DuBarGraph)
 
+        self.DuBarGraphBoxGridVLayout = QtWidgets.QVBoxLayout()
+        self.DuBarGraphBoxGridVLayout.addLayout(self.DuBarBoxGridLayout)
+        self.DuBarGraphBoxGridVLayout.addLayout(self.DuBarGraphVLayout)
+        ################################################################################################
 
-        ######################## {Concentration Label} AND {Concentration Graph} #######################
-
-        self.concentrationGraph = Graph(100,180)
-        self.concentrationGraph.setLabel(axis='left', text = 'Velocity')
-        self.concentrationGraph.setLabel(axis='bottom', text = '[CO2] (nmol/ml/sec)')
-        self.concentrationGraph.getViewBox().wheelEvent = self.on_wheel_event
-        self.concentrationGraphVLayout = QtWidgets.QVBoxLayout()
-        self.concentrationGraphVLayout.setContentsMargins(0, 78, 0, 0)
-        self.concentrationGraphVLayout.addWidget(self.concentrationGraph)
-
-        self.concentrationLabelGraphVLayout = QtWidgets.QVBoxLayout()
-        self.concentrationGraphLabel = QtWidgets.QLabel("Velocity - Concentration Graph")
-        self.concentrationGraphLabel.setContentsMargins(0,10,0,0)
-        self.concentrationLabelGraphVLayout.addWidget(self.concentrationGraphLabel, alignment=QtCore.Qt.AlignCenter)
-        self.concentrationLabelGraphVLayout.addLayout(self.concentrationGraphVLayout)
-        #################################################################################################
 
 
         # {{QFormLayout for Assay Buffer} AND {Assay Buffer Graph}} AND {{Concentration Label} AND {Concentration Graph}} AND {{Concentration Label} AND {Concentration Graph}} #
 
         self.calculatedPlotsHLayout = QtWidgets.QHBoxLayout()
         self.calculatedPlotsHLayout.addLayout(self.assayBufferGraphBoxGridVLayout)
-        self.calculatedPlotsHLayout.addLayout(self.hclGraphBoxGridVLayout)
-        self.calculatedPlotsHLayout.addLayout(self.concentrationLabelGraphVLayout)
+        self.calculatedPlotsHLayout.addLayout(self.uBarGraphBoxGridVLayout)
+        self.calculatedPlotsHLayout.addLayout(self.DuBarGraphBoxGridVLayout)
 
         self.calculatedPlotsFrame.setLayout(self.calculatedPlotsHLayout)
 
@@ -780,6 +763,12 @@ class LabView(QtWidgets.QMainWindow):
         self.curve4 = Curve("Curve 2", [], pg.mkPen(color="#4363d8", width=4), self.uBarGraph)
         self.curve4.plotCurve()
 
+        self.curve5 = Curve("Curve 1", [], pg.mkPen(color="#800000", width=4), self.DuBarGraph)
+        self.curve5.plotCurve()
+
+        self.curve6 = Curve("Curve 2", [], pg.mkPen(color="#4363d8", width=4), self.DuBarGraph)
+        self.curve6.plotCurve()
+
         # Initializing the mean bars.
         self.meanBar = pg.LinearRegionItem(values=(0, 1), orientation='vertical', brush=None, pen=None, hoverBrush=None, hoverPen=None, movable=True, bounds=None, span=(0, 1), swapMode='sort', clipItem=None)
         
@@ -972,13 +961,16 @@ class LabView(QtWidgets.QMainWindow):
             # Step 2: Create a QThread object
             self.realTimePlotthread = QThread(parent=self)
             self.uBarPlotthread = QThread(parent=self)
+            self.DuBarPlotthread = QThread(parent=self)
 
             # Step 3: Create a worker object
             self.worker = Worker(self)
             self.worker2 = Worker(self)
+            self.worker3 = Worker(self)
             # Step 4: Move worker to the thread
             self.worker.moveToThread(self.realTimePlotthread)
             self.worker2.moveToThread(self.uBarPlotthread)
+            self.worker3.moveToThread(self.DuBarPlotthread)
 
             # Step 5: Connect signals and slots and start the stop watch
             self.realTimePlotthread.started.connect(self.worker.run)
@@ -987,17 +979,28 @@ class LabView(QtWidgets.QMainWindow):
             self.uBarPlotthread.started.connect(self.worker2.run)
             self.worker2.finished.connect(self.uBarPlotthread.quit)
 
+            self.DuBarPlotthread.started.connect(self.worker3.run)
+            self.worker3.finished.connect(self.DuBarPlotthread.quit)
+
             # Connecting the signals to the methods.
             self.worker.plotEndBitSignal.connect(self.outOfDataCondition)
             self.worker.newDataPointSignal.connect(self.update_plot_data)
+
             self.worker2.plotEndBitSignal.connect(self.outOfDataCondition)
             self.worker2.newDataPointSignal.connect(self.update_plot_data)
+
+            self.worker3.plotEndBitSignal.connect(self.outOfDataCondition)
+            self.worker3.newDataPointSignal.connect(self.update_plot_data)
 
             # Deleting the reference of the worker and the thread from the memory to free up space.
             self.worker.finished.connect(self.worker.deleteLater)
             self.realTimePlotthread.finished.connect(self.realTimePlotthread.deleteLater)
+
             self.worker2.finished.connect(self.worker2.deleteLater)
-            self.realTimePlotthread.finished.connect(self.realTimePlotthread.deleteLater)
+            self.uBarPlotthread.finished.connect(self.uBarPlotthread.deleteLater)
+
+            self.worker3.finished.connect(self.worker3.deleteLater)
+            self.DuBarPlotthread.finished.connect(self.DuBarPlotthread.deleteLater)
 
             # Step 6: Start the thread
             if self.stopwatch.paused == True:
@@ -1011,6 +1014,8 @@ class LabView(QtWidgets.QMainWindow):
             # Unhide graphs
             self.curve3.unhide()
             self.curve4.unhide()
+            self.curve5.unhide()
+            self.curve6.unhide()
 
             # Final resets
             self.startButton.setEnabled(False)
@@ -1020,6 +1025,8 @@ class LabView(QtWidgets.QMainWindow):
             # change-file-reading
             # Write code to recieve the signal and start a new thread for dirwatch.
             self.worker.filesParsedSignal.connect(self.startNewFileNotifier)
+            self.worker2.filesParsedSignal.connect(self.startNewFileNotifier)
+            self.worker3.filesParsedSignal.connect(self.startNewFileNotifier)
             
         else:
             self.throwFolderNotSelectedException()
@@ -1092,7 +1099,7 @@ class LabView(QtWidgets.QMainWindow):
             of the line (calibration value).
             :param { lineEdit : QLineEdit} -> line edit that will display the mean value
             :param { curve : int} -> int that indicates the curve to take the mean from
-            :param { graph : int} -> 0 if assay graph, 1 if hcl graph
+            :param { graph : int} -> 0 if assay graph
             :param { concentration : int} -> concentration that will graph against mean
             :return -> None
         """
@@ -1127,23 +1134,6 @@ class LabView(QtWidgets.QMainWindow):
 
                 # set intercept line edit
                 self.intercept1LineEdit.setText(str(round(intercept, 4)))
-
-        else:
-            # find co2 HCL calibration (slope)
-            self.co2HCLCalibration = Calculations.calculateSlope(self.hclData)
-
-            if self.co2HCLCalibration == None:
-                self.throwUndefined(self.nmolLineEdit)
-                self.throwUndefined(self.intercept2LineEdit)
-            else:
-                # set slope line edit
-                self.nmolLineEdit.setText(str(round(self.co2HCLCalibration, 4)))
-
-                # find intercept
-                intercept = Calculations.calculateIntercept(self.hclData, self.co2HCLCalibration)
-
-                # set intercept line edit
-                self.intercept2LineEdit.setText(str(round(intercept, 4)))
 
 
 
@@ -1364,20 +1354,6 @@ class LabView(QtWidgets.QMainWindow):
         self.table.setItem(newRowPosition, 1, QtWidgets.QTableWidgetItem(str(round(self.vC, 4))))
         self.table.setItem(newRowPosition, 2, QtWidgets.QTableWidgetItem(str(round(self.co2Concentration, 4))))
         self.table.setItem(newRowPosition, 3, QtWidgets.QTableWidgetItem(str(round(self.o2Concentration, 4))))
-
-        #### Add new table row values to the velocity/concentration graph ####
-
-        self.o2VelocityConcentrationData[self.o2Concentration] = self.vO
-        self.co2VelocityConcentrationData[self.co2Concentration] = self.vC
-
-        self.concentrationGraph.plot(list(self.o2VelocityConcentrationData.keys()), list(self.o2VelocityConcentrationData.values()), pen=None, symbol='o',
-                                       symbolsize=1, symbolPen=pg.mkPen(color="#00fa9a", width=0), symbolBrush=pg.mkBrush("#00fa9a"))
-
-        self.concentrationGraph.plot(list(self.co2VelocityConcentrationData.keys()), list(self.co2VelocityConcentrationData.values()), pen=None, symbol='o',
-                                       symbolsize=1, symbolPen=pg.mkPen(color="#ff0000", width=0), symbolBrush=pg.mkBrush("#ff0000"))
-        
-        self.concentrationGraph.plotItem.getViewBox().autoRange()
-        
             
 
     def purgeTableButtonPressed(self):
@@ -1604,6 +1580,9 @@ class LabView(QtWidgets.QMainWindow):
 
         self.curve3.updateDataPoints(x, y_value[0])
         self.curve4.updateDataPoints(x, y_value[1])
+
+        self.curve5.updateDataPoints(x, y_value[0])
+        self.curve6.updateDataPoints(x, y_value[1])
         # print("Time taken plot all the points: ", time()-start)
 
     def changeGraphRange(self, x):
@@ -1620,6 +1599,8 @@ class LabView(QtWidgets.QMainWindow):
                 self.realTimeGraph.setNewXRange(self.currentXRange[0], self.currentXRange[1])
             if not self.uBarGraph.graphInteraction:
                 self.uBarGraph.setNewXRange(self.currentXRange[0], self.currentXRange[1])
+            if not self.DuBarGraph.graphInteraction:
+                self.DuBarGraph.setNewXRange(self.currentXRange[0], self.currentXRange[1])
 
         # Changing Y Axes Scale:
 
@@ -1633,6 +1614,11 @@ class LabView(QtWidgets.QMainWindow):
                 offsetMin = (20*self.yAllMin)/100
                 offsetMax = (20*self.yAllMax)/100
                 self.uBarGraph.setNewYRange(self.yAllMin-offsetMin, self.yAllMax+offsetMax)
+                self.isYChanged = False
+            if not self.DuBarGraph.graphInteraction:
+                offsetMin = (20*self.yAllMin)/100
+                offsetMax = (20*self.yAllMax)/100
+                self.DuBarGraph.setNewYRange(self.yAllMin-offsetMin, self.yAllMax+offsetMax)
                 self.isYChanged = False
     
 
@@ -1968,11 +1954,11 @@ class LabView(QtWidgets.QMainWindow):
         self.co2VelocityConcentrationData.clear()
 
         # clear plots
-        self.concentrationGraph.clear()
+        self.DuBarGraph.clear()
 
         #autoscale other graphs
         self.assayBufferGraph.plotItem.getViewBox().autoRange()
-        self.hclGraph.plotItem.getViewBox().autoRange()
+        self.uBarGraph.plotItem.getViewBox().autoRange()
         
         
     
@@ -2053,13 +2039,13 @@ class LabView(QtWidgets.QMainWindow):
             if (mean != None):    
                 self.hclData[concentration] = mean
 
-            self.hclGraph.clear()
+            self.uBarGraph.clear()
             
             # plot point on the hcl graph
-            hclLine = self.hclGraph.plot(list(self.hclData.values()), list(self.hclData.keys()), pen=None, symbol='o',
+            hclLine = self.uBarGraph.plot(list(self.hclData.values()), list(self.hclData.keys()), pen=None, symbol='o',
                                        symbolsize=1, symbolPen=pg.mkPen(color="#00fa9a", width=0), symbolBrush=pg.mkBrush("#00fa9a"))
             
-            self.hclGraph.plotItem.getViewBox().autoRange()
+            self.uBarGraph.plotItem.getViewBox().autoRange()
         
 
 
