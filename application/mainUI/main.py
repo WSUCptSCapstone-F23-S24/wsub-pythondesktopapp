@@ -157,10 +157,9 @@ class LabView(QtWidgets.QMainWindow):
         self.calculationButtonsUI()
 
         # List of calibration line edits
-        self.calibrationLineEdits = [self.temperatureLineEdit, self.o2CalibrationLineEdit, self.o2ZeroLineEdit, self.biCarbCo2LineEdit,
-                                    self.co2CalZeroLineEdit, self.co2Cal1ulLineEdit, self.co2Cal2ulLineEdit, self.co2Cal3ulLineEdit,
-                                    self.biCarbCalZeroLineEdit, self.biCarbCal2ulLineEdit, self.biCarbCal4ulLineEdit,
-                                    self.biCarbCal6ulLineEdit]
+        self.calibrationLineEdits = [self.temperatureLineEdit, self.o2ZeroLineEdit,
+                                    self.co2CalZeroLineEdit, self.co2Cal1ulLineEdit, self.co2Cal2ulLineEdit, self.co2Cal3ulLineEdit
+                                    ]
                                     
 
         # Add curves and Mean bar to the real time plot
@@ -382,7 +381,7 @@ class LabView(QtWidgets.QMainWindow):
         ######################## {QFormLayout for uBar} AND {uBar Graph} #######################
         self.uBarGraph = Graph(100,180)
         self.uBarGraph.setLabel(axis='left', text = 'uBar')
-        self.uBarGraph.setLabel(axis='bottom', text = 'Time')
+        self.uBarGraph.setLabel(axis='bottom', text = 'Time (s)')
         self.uBarGraph.getViewBox().wheelEvent = self.on_wheel_event
         self.uBarGraphVLayout = QtWidgets.QVBoxLayout()
         self.uBarGraphVLayout.setContentsMargins(0, 40, 0, 0)
@@ -396,7 +395,7 @@ class LabView(QtWidgets.QMainWindow):
         ######################## {QFormLayout for DuBar} AND {DuBar Graph} #######################
         self.DuBarGraph = Graph(100,180)
         self.DuBarGraph.setLabel(axis='left', text = 'D[uBar]')
-        self.DuBarGraph.setLabel(axis='bottom', text = 'Time')
+        self.DuBarGraph.setLabel(axis='bottom', text = 'Time (s)')
         self.DuBarGraph.getViewBox().wheelEvent = self.on_wheel_event
         self.DuBarGraphVLayout = QtWidgets.QVBoxLayout()
         self.DuBarGraphVLayout.setContentsMargins(0, 40, 0, 0)
@@ -506,66 +505,6 @@ class LabView(QtWidgets.QMainWindow):
         self.o2ZeroCo2CalGridLayout.setRowStretch(9,1)
         #################################################################################################
 
-
-
-        ######################## BiCarb/CO2 and BiCarb cal #############################
-
-        # Initializing all the buttons
-        self.biCarbCo2Button = Button("BiCarb/CO2", 120, 26)
-        self.biCarbCalZeroButton = Button("BiCarb Cal Zero", 120, 26)
-        self.biCarbCal2ulButton = Button("BiCarb Cal 2ul", 120, 26)
-        self.biCarbCal4ulButton = Button("BiCarb Cal 4ul", 120, 26)
-        self.biCarbCal6ulButton = Button("BiCarb Cal 6ul", 120, 26)
-
-        # Initializing line edits
-        self.biCarbCo2LineEdit = LineEdit()
-        self.biCarbCalZeroLineEdit = LineEdit()
-        self.biCarbCal2ulLineEdit = LineEdit()
-        self.biCarbCal4ulLineEdit = LineEdit()
-        self.biCarbCal6ulLineEdit = LineEdit()
-        self.o2CalibrationLineEdit = LineEdit()
-
-        # Make line edits editable
-        self.biCarbCo2LineEdit.setReadOnly(False)
-        self.biCarbCalZeroLineEdit.setReadOnly(False)
-        self.biCarbCal2ulLineEdit.setReadOnly(False)
-        self.biCarbCal4ulLineEdit.setReadOnly(False)
-        self.biCarbCal6ulLineEdit.setReadOnly(False)
-        self.o2CalibrationLineEdit.setReadOnly(False)
-
-        self.lineEditList.extend([self.biCarbCo2LineEdit, self.biCarbCalZeroLineEdit, self.biCarbCal2ulLineEdit, self.biCarbCal4ulLineEdit, self.biCarbCal6ulLineEdit, self.o2CalibrationLineEdit])
-
-        # Initializing QLabels
-        self.biCarbCo2Label = QtWidgets.QLabel("BiCarb/CO2")
-        self.o2CalibrationLabel = QtWidgets.QLabel("O2 Calibration")
-        self.hclLabel = QtWidgets.QLabel("HCL")
-
-        # Creating a QGrid Layout
-        self.biCarbCo2BiCarbCalGridLayout = QtWidgets.QGridLayout()
-        self.biCarbCo2BiCarbCalGridLayout.addWidget(self.biCarbCo2Label, 1, 1, 2, 2, alignment=QtCore.Qt.AlignCenter)
-        self.biCarbCo2BiCarbCalGridLayout.addWidget(self.biCarbCo2Button, 2, 1, alignment=QtCore.Qt.AlignCenter)
-        self.biCarbCo2BiCarbCalGridLayout.addWidget(self.biCarbCo2LineEdit, 2, 2, alignment=QtCore.Qt.AlignCenter)
-        self.biCarbCo2BiCarbCalGridLayout.addWidget(self.hclLabel, 3, 1, 2, 2, alignment=QtCore.Qt.AlignCenter)
-        self.biCarbCo2BiCarbCalGridLayout.addWidget(self.biCarbCalZeroButton, 4, 1, alignment=QtCore.Qt.AlignCenter)
-        self.biCarbCo2BiCarbCalGridLayout.addWidget(self.biCarbCalZeroLineEdit, 4, 2, alignment=QtCore.Qt.AlignCenter)
-        self.biCarbCo2BiCarbCalGridLayout.addWidget(self.biCarbCal2ulButton, 5, 1, alignment=QtCore.Qt.AlignCenter)
-        self.biCarbCo2BiCarbCalGridLayout.addWidget(self.biCarbCal2ulLineEdit, 5, 2, alignment=QtCore.Qt.AlignCenter)
-        self.biCarbCo2BiCarbCalGridLayout.addWidget(self.biCarbCal4ulButton, 6, 1, alignment=QtCore.Qt.AlignCenter)
-        self.biCarbCo2BiCarbCalGridLayout.addWidget(self.biCarbCal4ulLineEdit, 6, 2, alignment=QtCore.Qt.AlignCenter)
-        self.biCarbCo2BiCarbCalGridLayout.addWidget(self.biCarbCal6ulButton, 7, 1, alignment=QtCore.Qt.AlignCenter)
-        self.biCarbCo2BiCarbCalGridLayout.addWidget(self.biCarbCal6ulLineEdit, 7, 2, alignment=QtCore.Qt.AlignCenter)
-        self.biCarbCo2BiCarbCalGridLayout.addWidget(self.o2CalibrationLabel, 8, 1, 1, 2, alignment=QtCore.Qt.AlignCenter)
-        self.biCarbCo2BiCarbCalGridLayout.addWidget(self.o2CalibrationLineEdit, 9, 1, 1, 2, alignment=QtCore.Qt.AlignCenter) # Main Layout 2
-        self.biCarbCo2BiCarbCalGridLayout.setRowStretch(1,1)
-        self.biCarbCo2BiCarbCalGridLayout.setRowStretch(2,2)
-        self.biCarbCo2BiCarbCalGridLayout.setRowStretch(3,1)
-        self.biCarbCo2BiCarbCalGridLayout.setRowStretch(4,1)
-        self.biCarbCo2BiCarbCalGridLayout.setRowStretch(5,1)
-        self.biCarbCo2BiCarbCalGridLayout.setRowStretch(6,1)
-        self.biCarbCo2BiCarbCalGridLayout.setRowStretch(7,1)
-        self.biCarbCo2BiCarbCalGridLayout.setRowStretch(8,1)
-        self.biCarbCo2BiCarbCalGridLayout.setRowStretch(9,1)
-        #################################################################################################
 
 
 
@@ -706,7 +645,6 @@ class LabView(QtWidgets.QMainWindow):
 
         self.calculationButtonsFrameHLayout = QtWidgets.QHBoxLayout()
         self.calculationButtonsFrameHLayout.addLayout(self.o2ZeroCo2CalGridLayout)
-        self.calculationButtonsFrameHLayout.addLayout(self.biCarbCo2BiCarbCalGridLayout)
         self.calculationButtonsFrameHLayout.addLayout(self.co2o2GridLayout)
         self.calculationButtonsFrameHLayout.addLayout(self.co2ConcentrationGridLayout)
 
@@ -827,26 +765,7 @@ class LabView(QtWidgets.QMainWindow):
         self.co2Cal3ulLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.co2Cal3ulLineEdit, 3, 0, 3000))
         
 
-        # BiCarb Cal buttons connect method
-        self.biCarbCalZeroButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.biCarbCalZeroLineEdit, 3, 1, 0))
-        self.biCarbCal2ulButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.biCarbCal2ulLineEdit, 3, 1, 33.3))
-        self.biCarbCal4ulButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.biCarbCal4ulLineEdit, 3, 1, 66.6))
-        self.biCarbCal6ulButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.biCarbCal6ulLineEdit, 3, 1, 99.9))
-
-        # BiCarb Cal LineEdits connect text edited cnnnect method
-        self.biCarbCalZeroLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.biCarbCalZeroLineEdit, 3, 1, 0))
-        self.biCarbCal2ulLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.biCarbCal2ulLineEdit, 3, 1, 33.3))
-        self.biCarbCal4ulLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.biCarbCal4ulLineEdit, 3, 1, 66.6))
-        self.biCarbCal6ulLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.biCarbCal6ulLineEdit, 3, 1, 99.9))
-
-        self.o2CalibrationLineEdit.returnPressed.connect(lambda: self.OnEditedO2Cal())
-        
-
-        # BiCarb / CO2 button connect method
-        self.biCarbCo2Button.clicked.connect(lambda: self.biCarbCo2ButtonPressed())
-
-        # BiCarb / CO2 LineEdit text edited connect method
-        self.biCarbCo2LineEdit.returnPressed.connect(lambda: self.OnEditedBiCarbCo2())
+        #self.o2CalibrationLineEdit.returnPressed.connect(lambda: self.OnEditedO2Cal())
 
         # CO2 Zero button connect method
         self.co2ZeroButton.clicked.connect(self.co2ZeroButtonPressed)
@@ -1178,29 +1097,6 @@ class LabView(QtWidgets.QMainWindow):
         else:
             self.throwUndefined(self.o2CalibrationLineEdit)
 
-    def biCarbCo2ButtonPressed(self):
-        """
-        When the BiCarb/CO2 button is pressed, the ratio of BiCarb to CO2 is calculated and set
-        as long as the HCL calibration is not equal to zero
-        :param {_ : }
-        :return -> None
-        """
-
-        if (manualEntry):
-            if (self.biCarbCo2LineEdit.text() != ''):
-                self.biCarbCo2Ratio = float(self.biCarbCo2LineEdit.text())
-            else:
-                self.biCarbCo2Ratio = 0
-        else:
-            if self.co2BufferCalibration != 0 and self.co2HCLCalibration != 0:
-                # calculate ratio
-                self.biCarbCo2Ratio = self.co2BufferCalibration / self.co2HCLCalibration
-
-                # set line edit with calculation
-                self.biCarbCo2LineEdit.setText(str(round(self.biCarbCo2Ratio, 4)))
-            else:
-                self.throwUndefined(self.biCarbCo2LineEdit)
-
 
     def blankButtonPressed(self):
         """
@@ -1457,16 +1353,6 @@ class LabView(QtWidgets.QMainWindow):
         else:
             self.o2Calibration = float(self.o2CalibrationLineEdit.text())
             
-
-    def OnEditedBiCarbCo2(self):
-
-        # check for numerical input
-        if (not self.isFloat(self.biCarbCo2LineEdit.text()) and self.biCarbCo2LineEdit.text() != ''):
-            #throw execption
-            self.throwFloatValueWarning()
-            return
-
-        self.biCarbCo2ButtonPressed(True)
 
 
 
@@ -1736,8 +1622,6 @@ class LabView(QtWidgets.QMainWindow):
             self.OnEditedTemp()  # temperature
 
             self.OnEditedO2Cal()  # O2 Assay Buffer Zero
-
-            self.OnEditedBiCarbCo2()  # BiCarb/Co2 ratio
 
             # CO2 Assay Buffer Cals
 
