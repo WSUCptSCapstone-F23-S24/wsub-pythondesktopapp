@@ -324,8 +324,8 @@ class LabView(QtWidgets.QMainWindow):
 
         # Widgets to be added in the layout
         self.intercept1Label = QtWidgets.QLabel("Intercept")
-        self.biCarbCalLabel = QtWidgets.QLabel("BiCarb cal\n(nmol/ml/mV)")
-        self.assayBufferLabel = QtWidgets.QLabel("Assay Buffer")
+        self.biCarbCalLabel = QtWidgets.QLabel("CO2/Voltage\n   (ml/mV)")
+        self.assayBufferLabel = QtWidgets.QLabel("CO2 Calibrations")
         self.emptyLabel = QtWidgets.QLabel("")
 
         self.intercept1LineEdit = LineEdit()
@@ -363,9 +363,9 @@ class LabView(QtWidgets.QMainWindow):
 
         ######################## {QFormLayout for Assay Buffer} AND {Assay Buffer Graph} #######################
 
-        self.assayBufferGraph = Graph(100,180)
-        self.assayBufferGraph.setLabel(axis='left', text = 'CO2 (nmol/ml)')
-        self.assayBufferGraph.setLabel(axis='bottom', text = 'Voltage (mV)')
+        self.assayBufferGraph = Graph(3, 180)
+        self.assayBufferGraph.setLabel(axis='left', text = 'Voltage (mV)')
+        self.assayBufferGraph.setLabel(axis='bottom', text = 'CO2 (µBar)')
         self.assayBufferGraph.getViewBox().wheelEvent = self.on_wheel_event
         self.assayBufferGraphVLayout = QtWidgets.QVBoxLayout()
         self.assayBufferGraphVLayout.setContentsMargins(0, 40, 0, 0)
@@ -448,6 +448,9 @@ class LabView(QtWidgets.QMainWindow):
 
         # Initializing all the buttons
         self.o2ZeroButton = Button("O2 Zero", 120, 26)
+
+        self.co2ZeroButton = Button("CO2 Zero", 120, 26)
+        self.co2SampleButton = Button("CO2 Sample", 120, 26)
         self.co2CalZeroButton = Button("CO2 Cal Zero", 120, 26)
         self.co2Cal1ulButton = Button("CO2 Cal 1ul", 120, 26)
         self.co2Cal2ulButton = Button("CO2 Cal 2ul", 120, 26)
@@ -456,10 +459,16 @@ class LabView(QtWidgets.QMainWindow):
         # Initializing line edits
         self.o2ZeroLineEdit = LineEdit()
         self.o2ZeroLineEdit.setReadOnly(False)
+
+        self.co2ZeroLineEdit = LineEdit()
+        self.co2ZeroLineEdit.setReadOnly(False)
+        self.co2SampleLineEdit = LineEdit()
+        self.co2SampleLineEdit.setReadOnly(False)
         self.co2CalZeroLineEdit = LineEdit()
         self.co2Cal1ulLineEdit = LineEdit()
         self.co2Cal2ulLineEdit = LineEdit()
         self.co2Cal3ulLineEdit = LineEdit()
+
         self.temperatureLineEdit = LineEdit()
 
         # Make line edits editable
@@ -467,33 +476,30 @@ class LabView(QtWidgets.QMainWindow):
         self.co2Cal1ulLineEdit.setReadOnly(False)
         self.co2Cal2ulLineEdit.setReadOnly(False)
         self.co2Cal3ulLineEdit.setReadOnly(False)
-        
-        # make temperature LineEdit editable
-        self.temperatureLineEdit.setReadOnly(False)
 
-        self.lineEditList.extend([self.o2ZeroLineEdit, self.co2CalZeroLineEdit, self.co2Cal1ulLineEdit, self.co2Cal2ulLineEdit, self.co2Cal3ulLineEdit, self.temperatureLineEdit])
+        
+        
+
+        self.lineEditList.extend([self.o2ZeroLineEdit, self.co2CalZeroLineEdit, self.co2Cal1ulLineEdit, self.co2Cal2ulLineEdit, self.co2Cal3ulLineEdit])
 
         # Initializing QLabels
-        self.o2AssayBufferZeroLabel = QtWidgets.QLabel("O2 Zero")
-        self.temperatureLabel = QtWidgets.QLabel("Temperature (C)")
-        self.assayBufferLabel = QtWidgets.QLabel("Assay Buffer")
+        self.calibrationsBufferLabel = QtWidgets.QLabel("Calibrations")
 
         # Creating a QGrid Layout
         self.o2ZeroCo2CalGridLayout = QtWidgets.QGridLayout()
-        self.o2ZeroCo2CalGridLayout.addWidget(self.o2AssayBufferZeroLabel, 1, 1, 2, 2, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.o2ZeroButton, 2, 1, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.o2ZeroLineEdit, 2, 2, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.assayBufferLabel, 3, 1, 2, 2, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.co2CalZeroButton, 4, 1, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.co2CalZeroLineEdit, 4, 2, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal1ulButton, 5, 1, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal1ulLineEdit, 5, 2, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal2ulButton, 6, 1, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal2ulLineEdit, 6, 2, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal3ulButton, 7, 1, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal3ulLineEdit, 7, 2, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.temperatureLabel, 8, 1, 1, 2, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.temperatureLineEdit, 9, 1, 1, 2, alignment=QtCore.Qt.AlignCenter) # Main Layout 1
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2ZeroButton, 2, 1, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2ZeroLineEdit, 2, 2, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2SampleButton, 3, 1, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2SampleLineEdit, 3, 2, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.calibrationsBufferLabel, 4, 1, 2, 2, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2CalZeroButton, 5, 1, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2CalZeroLineEdit, 5, 2, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal1ulButton, 6, 1, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal1ulLineEdit, 6, 2, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal2ulButton, 7, 1, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal2ulLineEdit, 7, 2, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal3ulButton, 8, 1, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal3ulLineEdit, 8, 2, alignment=QtCore.Qt.AlignCenter)
         self.o2ZeroCo2CalGridLayout.setRowStretch(1,1)
         self.o2ZeroCo2CalGridLayout.setRowStretch(2,2)
         self.o2ZeroCo2CalGridLayout.setRowStretch(3,1)
@@ -581,8 +587,8 @@ class LabView(QtWidgets.QMainWindow):
         
         # unused leftover elements
         #Velocity and CO2 O2 Concentration Labels
-        self.v0Label = QtWidgets.QLabel("V0")
-        self.vcLabel = QtWidgets.QLabel("Vc")
+        self.v0Label = QtWidgets.QLabel("%CO2")
+        self.vcLabel = QtWidgets.QLabel("µBar2")
         self.co2ConcentrationLabel = QtWidgets.QLabel("[CO2]")
         self.o2ConcentrationLabel = QtWidgets.QLabel("[O2]")
 
@@ -597,16 +603,16 @@ class LabView(QtWidgets.QMainWindow):
         self.velocityConcentrationGridLayout = QtWidgets.QGridLayout()
         self.velocityConcentrationGridLayout.addWidget(self.v0Label, 1, 1, alignment=QtCore.Qt.AlignCenter)
         self.velocityConcentrationGridLayout.addWidget(self.vcLabel, 1, 2, alignment=QtCore.Qt.AlignCenter)
-        self.velocityConcentrationGridLayout.addWidget(self.co2ConcentrationLabel, 1, 3, alignment=QtCore.Qt.AlignCenter)
-        self.velocityConcentrationGridLayout.addWidget(self.o2ConcentrationLabel, 1, 4, alignment=QtCore.Qt.AlignCenter)
+        #self.velocityConcentrationGridLayout.addWidget(self.co2ConcentrationLabel, 1, 3, alignment=QtCore.Qt.AlignCenter)
+        #self.velocityConcentrationGridLayout.addWidget(self.o2ConcentrationLabel, 1, 4, alignment=QtCore.Qt.AlignCenter)
         self.velocityConcentrationGridLayout.addWidget(self.v0LineEdit, 2, 1, alignment=QtCore.Qt.AlignCenter)
         self.velocityConcentrationGridLayout.addWidget(self.vcLineEdit, 2, 2, alignment=QtCore.Qt.AlignCenter)
-        self.velocityConcentrationGridLayout.addWidget(self.co2Concentrationv0LineEdit, 2, 3, alignment=QtCore.Qt.AlignCenter)
-        self.velocityConcentrationGridLayout.addWidget(self.o2Concentrationv0LineEdit, 2, 4, alignment=QtCore.Qt.AlignCenter)
+        #self.velocityConcentrationGridLayout.addWidget(self.co2Concentrationv0LineEdit, 2, 3, alignment=QtCore.Qt.AlignCenter)
+        #self.velocityConcentrationGridLayout.addWidget(self.o2Concentrationv0LineEdit, 2, 4, alignment=QtCore.Qt.AlignCenter)
         self.velocityConcentrationGridLayout.setColumnStretch(1,1)
         self.velocityConcentrationGridLayout.setColumnStretch(2,1)
-        self.velocityConcentrationGridLayout.setColumnStretch(3,1)
-        self.velocityConcentrationGridLayout.setColumnStretch(4,1)
+        #self.velocityConcentrationGridLayout.setColumnStretch(3,1)
+        #self.velocityConcentrationGridLayout.setColumnStretch(4,1)
         
 
         # Add to table and Purge Button
@@ -645,8 +651,8 @@ class LabView(QtWidgets.QMainWindow):
 
         self.calculationButtonsFrameHLayout = QtWidgets.QHBoxLayout()
         self.calculationButtonsFrameHLayout.addLayout(self.o2ZeroCo2CalGridLayout)
-        self.calculationButtonsFrameHLayout.addLayout(self.co2o2GridLayout)
-        self.calculationButtonsFrameHLayout.addLayout(self.co2ConcentrationGridLayout)
+        #self.calculationButtonsFrameHLayout.addLayout(self.co2o2GridLayout)
+        self.calculationButtonsFrameHLayout.addLayout(self.tableVelocityConcentrationAddPurgeHLayout)
 
         self.calculationButtonsFrame.setLayout(self.calculationButtonsFrameHLayout)
         #################################################################################################
