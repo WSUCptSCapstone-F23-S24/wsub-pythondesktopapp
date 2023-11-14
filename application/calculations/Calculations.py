@@ -92,11 +92,11 @@ class Calculations:
     @staticmethod
     def calculateUbarCO2(percentCO2):
         """
-        Calculates and returns the ubar CO2 concentration from the %CO2.
+        Calculates and returns the uBar CO2 concentration from the %CO2.
         """
         
-        ubarCO2 = percentCO2 * 9200
-        return ubarCO2
+        uBarCO2 = percentCO2 * 9200
+        return uBarCO2
 
 
     
