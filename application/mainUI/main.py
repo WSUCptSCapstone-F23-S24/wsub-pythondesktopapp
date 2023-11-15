@@ -133,6 +133,7 @@ class LabView(QtWidgets.QMainWindow):
         self.o2Concentration = 0
 
         self.co2Zero44Reading = 0
+        self.co2SampleReading = 0
         
 
         self.keepCals = False
@@ -455,6 +456,8 @@ class LabView(QtWidgets.QMainWindow):
         self.co2Cal1ulButton = Button("CO2 Cal 1ul", 120, 26)
         self.co2Cal2ulButton = Button("CO2 Cal 2ul", 120, 26)
         self.co2Cal3ulButton = Button("CO2 Cal 3ul", 120, 26)
+        self.co2ZeroButton = Button("CO2 Zero", 120, 26)
+        self.co2SampleButton = Button("CO2 Sample", 120, 26)
 
         # Initializing line edits
         self.o2ZeroLineEdit = LineEdit()
@@ -464,11 +467,14 @@ class LabView(QtWidgets.QMainWindow):
         self.co2ZeroLineEdit.setReadOnly(False)
         self.co2SampleLineEdit = LineEdit()
         self.co2SampleLineEdit.setReadOnly(False)
+        
         self.co2CalZeroLineEdit = LineEdit()
         self.co2Cal1ulLineEdit = LineEdit()
         self.co2Cal2ulLineEdit = LineEdit()
         self.co2Cal3ulLineEdit = LineEdit()
-
+        self.co2ZeroLineEdit = LineEdit()
+        self.co2SampleLineEdit = LineEdit()
+        
         self.temperatureLineEdit = LineEdit()
 
         # Make line edits editable
@@ -487,21 +493,26 @@ class LabView(QtWidgets.QMainWindow):
 
         # Creating a QGrid Layout
         self.o2ZeroCo2CalGridLayout = QtWidgets.QGridLayout()
-        self.o2ZeroCo2CalGridLayout.addWidget(self.co2ZeroButton, 2, 1, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.co2ZeroLineEdit, 2, 2, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.co2SampleButton, 3, 1, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.co2SampleLineEdit, 3, 2, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.calibrationsBufferLabel, 4, 1, 2, 2, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.co2CalZeroButton, 5, 1, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.co2CalZeroLineEdit, 5, 2, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal1ulButton, 6, 1, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal1ulLineEdit, 6, 2, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal2ulButton, 7, 1, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal2ulLineEdit, 7, 2, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal3ulButton, 8, 1, alignment=QtCore.Qt.AlignCenter)
-        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal3ulLineEdit, 8, 2, alignment=QtCore.Qt.AlignCenter)
+        # self.o2ZeroCo2CalGridLayout.addWidget(self.o2AssayBufferZeroLabel, 1, 1, 2, 2, alignment=QtCore.Qt.AlignCenter)
+        # self.o2ZeroCo2CalGridLayout.addWidget(self.o2ZeroButton, 2, 1, alignment=QtCore.Qt.AlignCenter)
+        # self.o2ZeroCo2CalGridLayout.addWidget(self.o2ZeroLineEdit, 2, 2, alignment=QtCore.Qt.AlignCenter)
+        # self.o2ZeroCo2CalGridLayout.addWidget(self.assayBufferLabel, 3, 1, 2, 2, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2CalZeroButton, 1, 1, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2CalZeroLineEdit, 1, 2, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal1ulButton, 2, 1, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal1ulLineEdit, 2, 2, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal2ulButton, 3, 1, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal2ulLineEdit, 3, 2, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal3ulButton, 4, 1, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2Cal3ulLineEdit, 4, 2, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2ZeroButton, 6, 1, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2ZeroLineEdit, 6, 2, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2SampleButton, 7, 1, alignment=QtCore.Qt.AlignCenter)
+        self.o2ZeroCo2CalGridLayout.addWidget(self.co2SampleLineEdit, 7, 2, alignment=QtCore.Qt.AlignCenter)
+        # self.o2ZeroCo2CalGridLayout.addWidget(self.temperatureLabel, 8, 1, 1, 2, alignment=QtCore.Qt.AlignCenter)
+        # self.o2ZeroCo2CalGridLayout.addWidget(self.temperatureLineEdit, 9, 1, 1, 2, alignment=QtCore.Qt.AlignCenter) # Main Layout 1
         self.o2ZeroCo2CalGridLayout.setRowStretch(1,1)
-        self.o2ZeroCo2CalGridLayout.setRowStretch(2,2)
+        self.o2ZeroCo2CalGridLayout.setRowStretch(2,1)
         self.o2ZeroCo2CalGridLayout.setRowStretch(3,1)
         self.o2ZeroCo2CalGridLayout.setRowStretch(4,1)
         self.o2ZeroCo2CalGridLayout.setRowStretch(5,1)
@@ -509,6 +520,8 @@ class LabView(QtWidgets.QMainWindow):
         self.o2ZeroCo2CalGridLayout.setRowStretch(7,1)
         self.o2ZeroCo2CalGridLayout.setRowStretch(8,1)
         self.o2ZeroCo2CalGridLayout.setRowStretch(9,1)
+        #################################################################################################
+
         #################################################################################################
 
 
@@ -541,8 +554,6 @@ class LabView(QtWidgets.QMainWindow):
         self.blankButton = Button("Blank", 120, 26)
         self.extractButton = Button("Extract", 120, 26)
 
-        self.co2ZeroButton = Button("CO2 Zero", 120, 26)
-
 
         # Creating a QGrid Layout
         self.co2o2GridLayout = QtWidgets.QGridLayout()
@@ -572,7 +583,7 @@ class LabView(QtWidgets.QMainWindow):
         
         # Module 1 concentration labels
         self.percentCO2Label = QtWidgets.QLabel("%CO2")
-        self.ubarCO2Label = QtWidgets.QLabel("Ubar CO2")
+        self.ubarCO2Label = QtWidgets.QLabel("uBar CO2")
         
         # Module 1 concentration text boxes
         self.percentCO2LineEdit = LineEdit()
@@ -651,7 +662,8 @@ class LabView(QtWidgets.QMainWindow):
 
         self.calculationButtonsFrameHLayout = QtWidgets.QHBoxLayout()
         self.calculationButtonsFrameHLayout.addLayout(self.o2ZeroCo2CalGridLayout)
-        #self.calculationButtonsFrameHLayout.addLayout(self.co2o2GridLayout)
+        self.calculationButtonsFrameHLayout.addLayout(self.co2ConcentrationGridLayout)
+        self.calculationButtonsFrameHLayout.addLayout(self.co2o2GridLayout)
         self.calculationButtonsFrameHLayout.addLayout(self.tableVelocityConcentrationAddPurgeHLayout)
 
         self.calculationButtonsFrame.setLayout(self.calculationButtonsFrameHLayout)
@@ -775,6 +787,7 @@ class LabView(QtWidgets.QMainWindow):
 
         # CO2 Zero button connect method
         self.co2ZeroButton.clicked.connect(self.co2ZeroButtonPressed)
+        self.co2SampleButton.clicked.connect(self.co2SampleButtonPressed)
 
         # Blank button connect method
         self.blankButton.clicked.connect(self.blankButtonPressed)
@@ -1071,7 +1084,32 @@ class LabView(QtWidgets.QMainWindow):
         """
 
         # Set mean value from mean bars for Mass 44 graph
-        self.co2Zero44Reading = self.meanButtonPressed(self.co2ZeroLineEdit1, 3)                          
+        self.co2Zero44Reading = self.meanButtonPressed(self.co2ZeroLineEdit, 3)
+        
+    def co2SampleButtonPressed(self):
+        """
+        Sets the CO2 sample line edit to the mean value from the
+        vertical mean bars in the raw plot.
+        """
+        
+        self.co2SampleReading = self.meanButtonPressed(self.co2SampleLineEdit, 3)
+
+
+    def throwUndefined(self, lineEdit):
+        lineEdit.setText('undef')
+
+    def isFloat(self, string):
+        """
+        Checks if a string can be coverted to a float value
+        :param {string : string}
+        :return -> True or False
+        """
+        try:
+            float(string)
+            return True
+        except ValueError:
+            return False
+                                 
 
     def o2ZeroButtonPressed(self, manualEntry=False):
         """
