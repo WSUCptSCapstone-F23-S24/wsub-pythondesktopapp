@@ -325,22 +325,22 @@ class LabView(QtWidgets.QMainWindow):
 
         # Widgets to be added in the layout
         self.intercept1Label = QtWidgets.QLabel("Intercept")
-        self.biCarbCalLabel = QtWidgets.QLabel("CO2/Voltage\n   (ml/mV)")
+        self.co2VoltLabel = QtWidgets.QLabel("CO2/Voltage\n   (ml/mV)")
         self.assayBufferLabel = QtWidgets.QLabel("CO2 Calibrations")
         self.emptyLabel = QtWidgets.QLabel("")
 
         self.intercept1LineEdit = LineEdit()
-        self.biCarbCalLineEdit = LineEdit()
+        self.co2VoltLineEdit = LineEdit()
         
-        self.lineEditList.extend([self.intercept1LineEdit, self.biCarbCalLineEdit])
+        self.lineEditList.extend([self.intercept1LineEdit, self.co2VoltLineEdit])
 
         self.assayBufferBoxGridLayout = QtWidgets.QGridLayout()
         self.assayBufferBoxGridLayout.addWidget(self.emptyLabel, 1, 1, alignment=QtCore.Qt.AlignCenter)
         self.assayBufferBoxGridLayout.addWidget(self.intercept1Label, 1, 2, alignment=QtCore.Qt.AlignCenter)
-        self.assayBufferBoxGridLayout.addWidget(self.biCarbCalLabel, 1, 3, alignment=QtCore.Qt.AlignCenter)
+        self.assayBufferBoxGridLayout.addWidget(self.co2VoltLabel, 1, 3, alignment=QtCore.Qt.AlignCenter)
         self.assayBufferBoxGridLayout.addWidget(self.assayBufferLabel, 2, 1, alignment=QtCore.Qt.AlignCenter)
         self.assayBufferBoxGridLayout.addWidget(self.intercept1LineEdit, 2, 2, alignment=QtCore.Qt.AlignCenter)
-        self.assayBufferBoxGridLayout.addWidget(self.biCarbCalLineEdit, 2, 3, alignment=QtCore.Qt.AlignCenter)
+        self.assayBufferBoxGridLayout.addWidget(self.co2VoltLineEdit, 2, 3, alignment=QtCore.Qt.AlignCenter)
         self.assayBufferBoxGridLayout.setHorizontalSpacing(10)
         ###############################################################################################
 
@@ -1061,17 +1061,28 @@ class LabView(QtWidgets.QMainWindow):
             self.co2BufferCalibration = Calculations.calculateSlope(self.assayBufferData)
 
             if self.co2BufferCalibration == None:
-                self.throwUndefined(self.biCarbCalLineEdit)
+                #self.throwUndefined(self.biCarbCalLineEdit)
                 self.throwUndefined(self.intercept1LineEdit)
             else:
                 # set slope line edit
-                self.biCarbCalLineEdit.setText(str(round(self.co2BufferCalibration, 4)))
-
+                #self.biCarbCalLineEdit.setText(str(round(self.co2BufferCalibration, 4)))
+    
                 # find intercept
                 intercept = Calculations.calculateIntercept(self.assayBufferData, self.co2BufferCalibration)
 
                 # set intercept line edit
                 self.intercept1LineEdit.setText(str(round(intercept, 4)))
+                self.co2Cal3ulLineEdit
+        #if lineedit is co2 cal 3, then compute the co2/volt line        
+        if (lineEdit == self.co2Cal3ulLineEdit):
+            num = Calculations.calculateCo2OverVolt(float(self.co2CalZeroLineEdit.text()), 
+                                                    float(self.co2Cal1ulLineEdit.text()), 
+                                                    float(self.co2Cal2ulLineEdit.text()), 
+                                                    float(self.co2Cal3ulLineEdit.text()))
+            if(num == -99999): #num that is returned if num is undefinable
+                self.throwUndefined(self.co2VoltLineEdit)
+            else:
+                self.co2VoltLineEdit.setText(str(num))
 
 
 
