@@ -707,22 +707,22 @@ class LabView(QtWidgets.QMainWindow):
     def addCurveAndMeanBar(self):
 
         # Adding the plot curves
-        self.curve1 = Curve("Curve 1", [], pg.mkPen(color="#800000", width=4), self.realTimeGraph)
+        self.curve1 = Curve("Mass 32", [], pg.mkPen(color="#800000", width=4), self.realTimeGraph)
         self.curve1.plotCurve()
 
-        self.curve2 = Curve("Curve 2", [], pg.mkPen(color="#4363d8", width=4), self.realTimeGraph)
+        self.curve2 = Curve("Mass 44", [], pg.mkPen(color="#4363d8", width=4), self.realTimeGraph)
         self.curve2.plotCurve()
 
-        self.curve3 = Curve("Curve 1", [], pg.mkPen(color="#800000", width=4), self.uBarGraph)
+        self.curve3 = Curve("Mass 32", [], pg.mkPen(color="#800000", width=4), self.uBarGraph)
         self.curve3.plotCurve()
 
-        self.curve4 = Curve("Curve 2", [], pg.mkPen(color="#4363d8", width=4), self.uBarGraph)
+        self.curve4 = Curve("Mass 44", [], pg.mkPen(color="#4363d8", width=4), self.uBarGraph)
         self.curve4.plotCurve()
 
-        self.curve5 = Curve("Curve 1", [], pg.mkPen(color="#800000", width=4), self.DuBarGraph)
+        self.curve5 = Curve("Mass 32", [], pg.mkPen(color="#800000", width=4), self.DuBarGraph)
         self.curve5.plotCurve()
 
-        self.curve6 = Curve("Curve 2", [], pg.mkPen(color="#4363d8", width=4), self.DuBarGraph)
+        self.curve6 = Curve("Mass 44", [], pg.mkPen(color="#4363d8", width=4), self.DuBarGraph)
         self.curve6.plotCurve()
 
         # Initializing the mean bars.
@@ -771,16 +771,16 @@ class LabView(QtWidgets.QMainWindow):
         self.temperatureLineEdit.returnPressed.connect(lambda: self.OnEditedTemp())
 
         # CO2 Cal buttons connect method
-        self.co2CalZeroButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.co2CalZeroLineEdit, 1, 0, 0))
-        self.co2Cal1ulButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.co2Cal1ulLineEdit, 1, 0, 1))
-        self.co2Cal2ulButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.co2Cal2ulLineEdit, 1, 0, 2))
-        self.co2Cal3ulButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.co2Cal3ulLineEdit, 1, 0, 3))
+        self.co2CalZeroButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.co2CalZeroLineEdit, 3, 0, 0))
+        self.co2Cal1ulButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.co2Cal1ulLineEdit, 3, 0, 1))
+        self.co2Cal2ulButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.co2Cal2ulLineEdit, 3, 0, 2))
+        self.co2Cal3ulButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.co2Cal3ulLineEdit, 3, 0, 3))
 
         # CO2 Cal LineEdits connect text edited connet method
-        self.co2CalZeroLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.co2CalZeroLineEdit, 1, 0, 0))
-        self.co2Cal1ulLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.co2Cal1ulLineEdit, 1, 0, 1))
-        self.co2Cal2ulLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.co2Cal2ulLineEdit, 1, 0, 2))
-        self.co2Cal3ulLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.co2Cal3ulLineEdit, 1, 0, 3))
+        self.co2CalZeroLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.co2CalZeroLineEdit, 3, 0, 0))
+        self.co2Cal1ulLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.co2Cal1ulLineEdit, 3, 0, 1))
+        self.co2Cal2ulLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.co2Cal2ulLineEdit, 3, 0, 2))
+        self.co2Cal3ulLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.co2Cal3ulLineEdit, 3, 0, 3))
         
 
         #self.o2CalibrationLineEdit.returnPressed.connect(lambda: self.OnEditedO2Cal())
@@ -994,8 +994,8 @@ class LabView(QtWidgets.QMainWindow):
         """
             When a mean button is pressed, sets the lineEdit with
             the current mean value from the mean bars on a certain curve.
-            curve # 0 = mass 44
-            curve # 1 = mass 32
+            curve # 3 = mass 44
+            curve # 0 = mass 32
             :param { lineEdit : QLineEdit} -> line edit that will display the mean value
             :param { curve : int} -> int that indicates the curve to take the mean from
             :return -> mean_value
@@ -1097,7 +1097,7 @@ class LabView(QtWidgets.QMainWindow):
         """
 
         # Set mean value from mean bars for Mass 44 graph
-        self.co2Zero44Reading = self.meanButtonPressed(self.co2ZeroLineEdit, 1)
+        self.co2Zero44Reading = self.meanButtonPressed(self.co2ZeroLineEdit, 3)
         
     def co2SampleButtonPressed(self):
         """
@@ -1105,7 +1105,7 @@ class LabView(QtWidgets.QMainWindow):
         vertical mean bars in the raw plot.
         """
         
-        self.co2SampleReading = self.meanButtonPressed(self.co2SampleLineEdit, 1)
+        self.co2SampleReading = self.meanButtonPressed(self.co2SampleLineEdit, 3)
 
         #assume zero button has been pressed
         co2Volt = float(self.co2VoltLineEdit.text())
@@ -1532,13 +1532,13 @@ class LabView(QtWidgets.QMainWindow):
         self.changeGraphRange(x)
         
         self.curve1.updateDataPoints(x, y_value[0])
-        self.curve2.updateDataPoints(x, y_value[1])
+        self.curve2.updateDataPoints(x, y_value[3])
 
         self.curve3.updateDataPoints(x, y_value[0])
-        self.curve4.updateDataPoints(x, y_value[1])
+        self.curve4.updateDataPoints(x, y_value[3])
 
         self.curve5.updateDataPoints(x, y_value[0])
-        self.curve6.updateDataPoints(x, y_value[1])
+        self.curve6.updateDataPoints(x, y_value[3])
         # print("Time taken plot all the points: ", time()-start)
 
     def changeGraphRange(self, x):
