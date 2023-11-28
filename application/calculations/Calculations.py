@@ -90,7 +90,7 @@ class Calculations:
         co2Volt2 = (1/28)/mvdiff2
         co2Volt3 = (1/28)/mvdiff3
         average = (co2Volt1 + co2Volt2 + co2Volt3)/3
-        return average
+        return round(average, 3)
  
 
     @staticmethod
@@ -100,7 +100,7 @@ class Calculations:
         """
         
         percentCO2 = calibration * (sample - zero)
-        return percentCO2
+        return round(percentCO2, 3)
     
     
     @staticmethod
@@ -110,7 +110,7 @@ class Calculations:
         """
         
         uBarCO2 = percentCO2 * 9200
-        return uBarCO2
+        return round(uBarCO2, 3)
 
 
     

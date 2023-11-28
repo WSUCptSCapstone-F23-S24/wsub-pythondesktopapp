@@ -364,9 +364,9 @@ class LabView(QtWidgets.QMainWindow):
 
         ######################## {QFormLayout for Assay Buffer} AND {Assay Buffer Graph} #######################
 
-        self.assayBufferGraph = Graph(3, 180)
-        self.assayBufferGraph.setLabel(axis='left', text = 'Voltage (mV)')
-        self.assayBufferGraph.setLabel(axis='bottom', text = 'CO2 (µBar)')
+        self.assayBufferGraph = Graph(180, 3)
+        self.assayBufferGraph.setLabel(axis='left', text = 'CO2 (µL)')
+        self.assayBufferGraph.setLabel(axis='bottom', text = 'Voltage (mV)')
         self.assayBufferGraph.getViewBox().wheelEvent = self.on_wheel_event
         self.assayBufferGraphVLayout = QtWidgets.QVBoxLayout()
         self.assayBufferGraphVLayout.setContentsMargins(0, 40, 0, 0)
@@ -453,9 +453,9 @@ class LabView(QtWidgets.QMainWindow):
         self.co2ZeroButton = Button("CO2 Zero", 120, 26)
         self.co2SampleButton = Button("CO2 Sample", 120, 26)
         self.co2CalZeroButton = Button("CO2 Cal Zero", 120, 26)
-        self.co2Cal1ulButton = Button("CO2 Cal 1ul", 120, 26)
-        self.co2Cal2ulButton = Button("CO2 Cal 2ul", 120, 26)
-        self.co2Cal3ulButton = Button("CO2 Cal 3ul", 120, 26)
+        self.co2Cal1ulButton = Button("CO2 Cal 1µl", 120, 26)
+        self.co2Cal2ulButton = Button("CO2 Cal 2µl", 120, 26)
+        self.co2Cal3ulButton = Button("CO2 Cal 3µl", 120, 26)
         self.co2ZeroButton = Button("CO2 Zero", 120, 26)
         self.co2SampleButton = Button("CO2 Sample", 120, 26)
 
@@ -598,28 +598,28 @@ class LabView(QtWidgets.QMainWindow):
         
         # unused leftover elements
         #Velocity and CO2 O2 Concentration Labels
-        self.v0Label = QtWidgets.QLabel("%CO2")
-        self.vcLabel = QtWidgets.QLabel("µBar2")
+        self.percentCO2Label2 = QtWidgets.QLabel("%CO2")
+        self.uBar2Label = QtWidgets.QLabel("µBar2")
         self.co2ConcentrationLabel = QtWidgets.QLabel("[CO2]")
         self.o2ConcentrationLabel = QtWidgets.QLabel("[O2]")
 
         #Velocity and CO2 O2 Concentration Text Edit
-        self.v0LineEdit = LineEdit()
-        self.vcLineEdit = LineEdit()
-        self.co2Concentrationv0LineEdit = LineEdit()
-        self.o2Concentrationv0LineEdit = LineEdit()
+        self.percentCO2LineEdit2 = LineEdit()
+        self.uBar2LineEdit = LineEdit()
+        self.co2ConcentrationpercentCO2LineEdit2 = LineEdit()
+        self.o2ConcentrationpercentCO2LineEdit2 = LineEdit()
 
-        self.lineEditList.extend([self.v0LineEdit, self.vcLineEdit, self.co2Concentrationv0LineEdit, self.o2Concentrationv0LineEdit])
+        self.lineEditList.extend([self.percentCO2LineEdit2, self.uBar2LineEdit, self.co2ConcentrationpercentCO2LineEdit2, self.o2ConcentrationpercentCO2LineEdit2])
 
         self.velocityConcentrationGridLayout = QtWidgets.QGridLayout()
-        self.velocityConcentrationGridLayout.addWidget(self.v0Label, 1, 1, alignment=QtCore.Qt.AlignCenter)
-        self.velocityConcentrationGridLayout.addWidget(self.vcLabel, 1, 2, alignment=QtCore.Qt.AlignCenter)
+        self.velocityConcentrationGridLayout.addWidget(self.percentCO2Label2, 1, 1, alignment=QtCore.Qt.AlignCenter)
+        self.velocityConcentrationGridLayout.addWidget(self.uBar2Label, 1, 2, alignment=QtCore.Qt.AlignCenter)
         #self.velocityConcentrationGridLayout.addWidget(self.co2ConcentrationLabel, 1, 3, alignment=QtCore.Qt.AlignCenter)
         #self.velocityConcentrationGridLayout.addWidget(self.o2ConcentrationLabel, 1, 4, alignment=QtCore.Qt.AlignCenter)
-        self.velocityConcentrationGridLayout.addWidget(self.v0LineEdit, 2, 1, alignment=QtCore.Qt.AlignCenter)
-        self.velocityConcentrationGridLayout.addWidget(self.vcLineEdit, 2, 2, alignment=QtCore.Qt.AlignCenter)
-        #self.velocityConcentrationGridLayout.addWidget(self.co2Concentrationv0LineEdit, 2, 3, alignment=QtCore.Qt.AlignCenter)
-        #self.velocityConcentrationGridLayout.addWidget(self.o2Concentrationv0LineEdit, 2, 4, alignment=QtCore.Qt.AlignCenter)
+        self.velocityConcentrationGridLayout.addWidget(self.percentCO2LineEdit2, 2, 1, alignment=QtCore.Qt.AlignCenter)
+        self.velocityConcentrationGridLayout.addWidget(self.uBar2LineEdit, 2, 2, alignment=QtCore.Qt.AlignCenter)
+        #self.velocityConcentrationGridLayout.addWidget(self.co2ConcentrationpercentCO2LineEdit2, 2, 3, alignment=QtCore.Qt.AlignCenter)
+        #self.velocityConcentrationGridLayout.addWidget(self.o2ConcentrationpercentCO2LineEdit2, 2, 4, alignment=QtCore.Qt.AlignCenter)
         self.velocityConcentrationGridLayout.setColumnStretch(1,1)
         self.velocityConcentrationGridLayout.setColumnStretch(2,1)
         #self.velocityConcentrationGridLayout.setColumnStretch(3,1)
@@ -771,16 +771,16 @@ class LabView(QtWidgets.QMainWindow):
         self.temperatureLineEdit.returnPressed.connect(lambda: self.OnEditedTemp())
 
         # CO2 Cal buttons connect method
-        self.co2CalZeroButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.co2CalZeroLineEdit, 3, 0, 0))
-        self.co2Cal1ulButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.co2Cal1ulLineEdit, 3, 0, 1000))
-        self.co2Cal2ulButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.co2Cal2ulLineEdit, 3, 0, 2000))
-        self.co2Cal3ulButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.co2Cal3ulLineEdit, 3, 0, 3000))
+        self.co2CalZeroButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.co2CalZeroLineEdit, 1, 0, 0))
+        self.co2Cal1ulButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.co2Cal1ulLineEdit, 1, 0, 1))
+        self.co2Cal2ulButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.co2Cal2ulLineEdit, 1, 0, 2))
+        self.co2Cal3ulButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.co2Cal3ulLineEdit, 1, 0, 3))
 
         # CO2 Cal LineEdits connect text edited connet method
-        self.co2CalZeroLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.co2CalZeroLineEdit, 3, 0, 0))
-        self.co2Cal1ulLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.co2Cal1ulLineEdit, 3, 0, 1000))
-        self.co2Cal2ulLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.co2Cal2ulLineEdit, 3, 0, 2000))
-        self.co2Cal3ulLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.co2Cal3ulLineEdit, 3, 0, 3000))
+        self.co2CalZeroLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.co2CalZeroLineEdit, 1, 0, 0))
+        self.co2Cal1ulLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.co2Cal1ulLineEdit, 1, 0, 1))
+        self.co2Cal2ulLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.co2Cal2ulLineEdit, 1, 0, 2))
+        self.co2Cal3ulLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.co2Cal3ulLineEdit, 1, 0, 3))
         
 
         #self.o2CalibrationLineEdit.returnPressed.connect(lambda: self.OnEditedO2Cal())
@@ -994,6 +994,8 @@ class LabView(QtWidgets.QMainWindow):
         """
             When a mean button is pressed, sets the lineEdit with
             the current mean value from the mean bars on a certain curve.
+            curve # 0 = mass 44
+            curve # 1 = mass 32
             :param { lineEdit : QLineEdit} -> line edit that will display the mean value
             :param { curve : int} -> int that indicates the curve to take the mean from
             :return -> mean_value
@@ -1095,7 +1097,7 @@ class LabView(QtWidgets.QMainWindow):
         """
 
         # Set mean value from mean bars for Mass 44 graph
-        self.co2Zero44Reading = self.meanButtonPressed(self.co2ZeroLineEdit, 3)
+        self.co2Zero44Reading = self.meanButtonPressed(self.co2ZeroLineEdit, 1)
         
     def co2SampleButtonPressed(self):
         """
@@ -1103,7 +1105,20 @@ class LabView(QtWidgets.QMainWindow):
         vertical mean bars in the raw plot.
         """
         
-        self.co2SampleReading = self.meanButtonPressed(self.co2SampleLineEdit, 3)
+        self.co2SampleReading = self.meanButtonPressed(self.co2SampleLineEdit, 1)
+
+        #assume zero button has been pressed
+        co2Volt = float(self.co2VoltLineEdit.text())
+        co2Sample = float(self.co2SampleLineEdit.text())
+        co2Zero = float(self.co2ZeroLineEdit.text())
+        #calculate values
+        percentCO2 = Calculations.calculatePercentCO2(co2Volt, co2Sample, co2Zero)
+        uBar2 = Calculations.calculateUbarCO2(percentCO2)
+        #populate fields    
+        self.percentCO2LineEdit2.setText(str(percentCO2))
+        self.uBar2LineEdit.setText(str(uBar2))
+
+
 
 
     def throwUndefined(self, lineEdit):
@@ -1267,10 +1282,10 @@ class LabView(QtWidgets.QMainWindow):
 
         # If the o2 calibration or co2 calibration are not defined, return undefined
         if (self.o2Calibration == 0 or self.co2BufferCalibration == 0 or self.biCarbCo2Ratio == 0):
-            self.throwUndefined(self.v0LineEdit)
-            self.throwUndefined(self.vcLineEdit)
-            self.throwUndefined(self.co2Concentrationv0LineEdit)
-            self.throwUndefined(self.o2Concentrationv0LineEdit)
+            self.throwUndefined(self.percentCO2LineEdit2)
+            self.throwUndefined(self.uBar2LineEdit)
+            self.throwUndefined(self.co2ConcentrationpercentCO2LineEdit2)
+            self.throwUndefined(self.o2ConcentrationpercentCO2LineEdit2)
             return
         
         self.vO = self.o2ConsumptionRate * self.o2Calibration * -1
@@ -1280,10 +1295,10 @@ class LabView(QtWidgets.QMainWindow):
 
         # Set Line Edits
 
-        self.v0LineEdit.setText(str(round(self.vO, 4)))
-        self.vcLineEdit.setText(str(round(self.vC, 4)))
-        self.co2Concentrationv0LineEdit.setText(str(round(self.co2Concentration, 4)))
-        self.o2Concentrationv0LineEdit.setText(str(round(self.o2Concentration, 4)))
+        self.percentCO2LineEdit2.setText(str(round(self.vO, 4)))
+        self.uBar2LineEdit.setText(str(round(self.vC, 4)))
+        self.co2ConcentrationpercentCO2LineEdit2.setText(str(round(self.co2Concentration, 4)))
+        self.o2ConcentrationpercentCO2LineEdit2.setText(str(round(self.o2Concentration, 4)))
 
     def addToTableButtonPressed(self):
         """
