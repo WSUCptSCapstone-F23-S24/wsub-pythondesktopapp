@@ -1,4 +1,3 @@
-
 """
 __author__ = "Ritik Agarwal, Zoe Parker"
 __credits__ = ["Ritik Agarwal", "Zoe Parker"]
@@ -78,7 +77,22 @@ class Calculations:
         else:
             return 0
         
-        
+    def calculateCo2OverVolt(calZero, cal1, cal2, cal3):
+        """to be called once cals are completed 
+        Calculates the average %CO2/mv for all CO2 cal
+        """
+        mvdiff1 = cal1 - calZero
+        mvdiff2 = cal2 - cal1
+        mvdiff3 = cal3 - cal2
+        if(mvdiff1 == 0 or mvdiff2 == 0 or mvdiff3 == 0):
+            return -99999 #return val to be undefined
+        co2Volt1 = (1/28)/mvdiff1
+        co2Volt2 = (1/28)/mvdiff2
+        co2Volt3 = (1/28)/mvdiff3
+        average = (co2Volt1 + co2Volt2 + co2Volt3)/3
+        return round(average, 3)
+ 
+
     @staticmethod
     def calculatePercentCO2(calibration, sample, zero):
         """
@@ -86,7 +100,7 @@ class Calculations:
         """
         
         percentCO2 = calibration * (sample - zero)
-        return percentCO2
+        return round(percentCO2, 3)
     
     
     @staticmethod
@@ -96,7 +110,7 @@ class Calculations:
         """
         
         uBarCO2 = percentCO2 * 9200
-        return uBarCO2
+        return round(uBarCO2, 3)
 
 
     
