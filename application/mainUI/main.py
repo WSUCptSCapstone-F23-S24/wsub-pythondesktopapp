@@ -520,6 +520,7 @@ class LabView(QtWidgets.QMainWindow):
         self.o2ZeroCo2CalGridLayout.setRowStretch(7,1)
         self.o2ZeroCo2CalGridLayout.setRowStretch(8,1)
         self.o2ZeroCo2CalGridLayout.setRowStretch(9,1)
+        self.o2ZeroCo2CalGridLayout.setColumnStretch(3, 4)
         #################################################################################################
 
         #################################################################################################
@@ -581,20 +582,7 @@ class LabView(QtWidgets.QMainWindow):
 
         ########################{CO2 Zero Blank Extract} AND {CO2 O2 LineEdit Layout} ###################
         
-        # Module 1 concentration labels
-        self.percentCO2Label = QtWidgets.QLabel("%CO2")
-        self.ubarCO2Label = QtWidgets.QLabel("uBar CO2")
         
-        # Module 1 concentration text boxes
-        self.percentCO2LineEdit = LineEdit()
-        self.ubarCO2LineEdit = LineEdit()
-        
-        # Module 1 concentration grid layout
-        self.co2ConcentrationGridLayout = QtWidgets.QGridLayout()
-        self.co2ConcentrationGridLayout.addWidget(self.percentCO2Label, 1, 1, alignment=QtCore.Qt.AlignCenter)
-        self.co2ConcentrationGridLayout.addWidget(self.percentCO2LineEdit, 1, 2, alignment=QtCore.Qt.AlignCenter)
-        self.co2ConcentrationGridLayout.addWidget(self.ubarCO2Label, 2, 1, alignment=QtCore.Qt.AlignCenter)
-        self.co2ConcentrationGridLayout.addWidget(self.ubarCO2LineEdit, 2, 2, alignment=QtCore.Qt.AlignCenter)
         
         # unused leftover elements
         #Velocity and CO2 O2 Concentration Labels
@@ -620,8 +608,8 @@ class LabView(QtWidgets.QMainWindow):
         self.velocityConcentrationGridLayout.addWidget(self.uBar2LineEdit, 2, 2, alignment=QtCore.Qt.AlignCenter)
         #self.velocityConcentrationGridLayout.addWidget(self.co2ConcentrationpercentCO2LineEdit2, 2, 3, alignment=QtCore.Qt.AlignCenter)
         #self.velocityConcentrationGridLayout.addWidget(self.o2ConcentrationpercentCO2LineEdit2, 2, 4, alignment=QtCore.Qt.AlignCenter)
-        self.velocityConcentrationGridLayout.setColumnStretch(1,1)
-        self.velocityConcentrationGridLayout.setColumnStretch(2,1)
+        #self.velocityConcentrationGridLayout.setColumnStretch(1,1)
+        #self.velocityConcentrationGridLayout.setColumnStretch(2,1)
         #self.velocityConcentrationGridLayout.setColumnStretch(3,1)
         #self.velocityConcentrationGridLayout.setColumnStretch(4,1)
         
@@ -645,10 +633,13 @@ class LabView(QtWidgets.QMainWindow):
         # Dummy row count
         #self.table.setRowCount(4)
         # set column count
-        self.table.setColumnCount(4)
+        self.table.setColumnCount(2)
+        self.table.setMaximumWidth(220)
+        
 
         self.tableVLayout = QtWidgets.QVBoxLayout()
         self.tableVLayout.addWidget(self.table)
+    
         
         # Table and addTable purgeTable layout
         self.tableVelocityConcentrationVLayout = QtWidgets.QVBoxLayout()
@@ -659,10 +650,10 @@ class LabView(QtWidgets.QMainWindow):
         self.tableVelocityConcentrationAddPurgeHLayout = QtWidgets.QHBoxLayout()
         self.tableVelocityConcentrationAddPurgeHLayout.addLayout(self.addPurgeTableVLayout)
         self.tableVelocityConcentrationAddPurgeHLayout.addLayout(self.tableVelocityConcentrationVLayout)        # Main Layout 4
+        
 
         self.calculationButtonsFrameHLayout = QtWidgets.QHBoxLayout()
         self.calculationButtonsFrameHLayout.addLayout(self.o2ZeroCo2CalGridLayout)
-        self.calculationButtonsFrameHLayout.addLayout(self.co2ConcentrationGridLayout)
         self.calculationButtonsFrameHLayout.addLayout(self.co2o2GridLayout)
         self.calculationButtonsFrameHLayout.addLayout(self.tableVelocityConcentrationAddPurgeHLayout)
 
