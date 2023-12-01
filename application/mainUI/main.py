@@ -520,7 +520,9 @@ class LabView(QtWidgets.QMainWindow):
         self.o2ZeroCo2CalGridLayout.setRowStretch(7,1)
         self.o2ZeroCo2CalGridLayout.setRowStretch(8,1)
         self.o2ZeroCo2CalGridLayout.setRowStretch(9,1)
-        self.o2ZeroCo2CalGridLayout.setColumnStretch(3, 4)
+        self.o2ZeroCo2CalGridLayout.setColumnStretch(0,1)
+        self.o2ZeroCo2CalGridLayout.setContentsMargins(2,3,200,0)
+        
         #################################################################################################
 
         #################################################################################################
@@ -558,10 +560,10 @@ class LabView(QtWidgets.QMainWindow):
 
         # Creating a QGrid Layout
         self.co2o2GridLayout = QtWidgets.QGridLayout()
-        self.co2o2GridLayout.addWidget(self.co2Zero44Label, 1, 2, 2, 1, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.co2ZeroButton, 2, 1, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.co2ZeroLineEdit1, 2, 2, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.co2ZeroLineEdit2, 2, 3, alignment=QtCore.Qt.AlignCenter)
+        #self.co2o2GridLayout.addWidget(self.co2Zero44Label, 1, 2, 2, 1, alignment=QtCore.Qt.AlignCenter)
+        #self.co2o2GridLayout.addWidget(self.co2ZeroButton, 2, 1, alignment=QtCore.Qt.AlignCenter)
+        #self.co2o2GridLayout.addWidget(self.co2ZeroLineEdit1, 2, 2, alignment=QtCore.Qt.AlignCenter)
+        #self.co2o2GridLayout.addWidget(self.co2ZeroLineEdit2, 2, 3, alignment=QtCore.Qt.AlignCenter)
         
         self.co2o2GridLayout.addWidget(self.co2Label, 3, 2, 2, 1, alignment=QtCore.Qt.AlignCenter)
         self.co2o2GridLayout.addWidget(self.o2Label, 3, 3, 2, 1, alignment=QtCore.Qt.AlignCenter)
@@ -650,7 +652,7 @@ class LabView(QtWidgets.QMainWindow):
         self.tableVelocityConcentrationAddPurgeHLayout = QtWidgets.QHBoxLayout()
         self.tableVelocityConcentrationAddPurgeHLayout.addLayout(self.addPurgeTableVLayout)
         self.tableVelocityConcentrationAddPurgeHLayout.addLayout(self.tableVelocityConcentrationVLayout)        # Main Layout 4
-        
+        self.tableVelocityConcentrationAddPurgeHLayout.setContentsMargins(0,0,300,0)
 
         self.calculationButtonsFrameHLayout = QtWidgets.QHBoxLayout()
         self.calculationButtonsFrameHLayout.addLayout(self.o2ZeroCo2CalGridLayout)
@@ -1486,6 +1488,7 @@ class LabView(QtWidgets.QMainWindow):
 
             # Getting the x coordinate and list of y coordinates from the tuple
             x, y = dataPoint
+            y[3] = y[3] * 2
 
             # Updating the data points in the singleton class.
             self.sharedData.dataPoints[x] = y
@@ -1498,7 +1501,6 @@ class LabView(QtWidgets.QMainWindow):
             # print(x_value, y_value)
         # x_value, y_value = self.getNextPoint(self.dataObj)
 
-        # Updating the shared singleton plot data
         
         # Updating all the curves
         # start = time()
