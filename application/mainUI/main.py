@@ -383,7 +383,7 @@ class LabView(QtWidgets.QMainWindow):
         self.uBarGraph = Graph(100,180)
         self.uBarGraph.setLabel(axis='left', text = 'uBar')
         self.uBarGraph.setLabel(axis='bottom', text = 'Time (s)')
-        self.uBarGraph.getViewBox().wheelEvent = self.on_wheel_event
+        #self.uBarGraph.getViewBox().wheelEvent = self.on_wheel_event
         self.uBarGraphVLayout = QtWidgets.QVBoxLayout()
         self.uBarGraphVLayout.setContentsMargins(0, 40, 0, 0)
         self.uBarGraphVLayout.addWidget(self.uBarGraph)
@@ -397,7 +397,7 @@ class LabView(QtWidgets.QMainWindow):
         self.DuBarGraph = Graph(100,180)
         self.DuBarGraph.setLabel(axis='left', text = 'D[uBar]')
         self.DuBarGraph.setLabel(axis='bottom', text = 'Time (s)')
-        self.DuBarGraph.getViewBox().wheelEvent = self.on_wheel_event
+        #self.DuBarGraph.getViewBox().wheelEvent = self.on_wheel_event
         self.DuBarGraphVLayout = QtWidgets.QVBoxLayout()
         self.DuBarGraphVLayout.setContentsMargins(0, 40, 0, 0)
         self.DuBarGraphVLayout.addWidget(self.DuBarGraph)
