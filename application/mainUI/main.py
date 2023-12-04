@@ -1077,7 +1077,7 @@ class LabView(QtWidgets.QMainWindow):
             if(num == -99999): #num that is returned if num is undefinable
                 self.throwUndefined(self.co2VoltLineEdit)
             else:
-                self.co2VoltLineEdit.setText(str(num))
+                self.co2VoltLineEdit.setText(str(round(num, 10)))
 
 
 
@@ -1108,8 +1108,8 @@ class LabView(QtWidgets.QMainWindow):
         percentCO2 = Calculations.calculatePercentCO2(co2Volt, co2Sample, co2Zero)
         uBar2 = Calculations.calculateUbarCO2(percentCO2)
         #populate fields    
-        self.percentCO2LineEdit2.setText(str(percentCO2))
-        self.uBar2LineEdit.setText(str(uBar2))
+        self.percentCO2LineEdit2.setText(str(round(percentCO2, 4)))
+        self.uBar2LineEdit.setText(str(round(uBar2, 4)))
 
 
 
