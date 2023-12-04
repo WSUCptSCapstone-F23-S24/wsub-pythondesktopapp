@@ -530,58 +530,6 @@ class LabView(QtWidgets.QMainWindow):
 
 
 
-        ########################{CO2 Zero Blank Extract} AND {CO2 O2 LineEdit Layout} #############################
-
-        # Initializing line edits
-        self.co2LineEdit1 = LineEdit()
-        self.co2LineEdit2 = LineEdit()
-        self.co2LineEdit3 = LineEdit()
-        self.co2LineEdit4 = LineEdit()
-        self.o2LineEdit1 = LineEdit()
-        self.o2LineEdit2 = LineEdit()
-        self.o2LineEdit3 = LineEdit()
-        self.o2LineEdit4 = LineEdit()
-
-        self.co2ZeroLineEdit1 = LineEdit()
-        self.co2ZeroLineEdit2 = LineEdit()
-
-        self.lineEditList.extend([self.co2LineEdit1, self.co2LineEdit2, self.co2LineEdit3, self.co2LineEdit4, self.o2LineEdit1, self.o2LineEdit2, self.o2LineEdit3, self.o2LineEdit4])
-        self.lineEditList.extend([self.co2ZeroLineEdit1, self.co2ZeroLineEdit2])
-        
-        # Initializing QLabels
-        self.co2Label = QtWidgets.QLabel("CO2")
-        self.o2Label = QtWidgets.QLabel("O2")
-
-        self.co2Zero44Label =  QtWidgets.QLabel("CO2 Zero\n(Mass 44)")
-
-        self.blankButton = Button("Blank", 120, 26)
-        self.extractButton = Button("Extract", 120, 26)
-
-
-        # Creating a QGrid Layout
-        self.co2o2GridLayout = QtWidgets.QGridLayout()
-        #self.co2o2GridLayout.addWidget(self.co2Zero44Label, 1, 2, 2, 1, alignment=QtCore.Qt.AlignCenter)
-        #self.co2o2GridLayout.addWidget(self.co2ZeroButton, 2, 1, alignment=QtCore.Qt.AlignCenter)
-        #self.co2o2GridLayout.addWidget(self.co2ZeroLineEdit1, 2, 2, alignment=QtCore.Qt.AlignCenter)
-        #self.co2o2GridLayout.addWidget(self.co2ZeroLineEdit2, 2, 3, alignment=QtCore.Qt.AlignCenter)
-        
-        self.co2o2GridLayout.addWidget(self.co2Label, 3, 2, 2, 1, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.o2Label, 3, 3, 2, 1, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.blankButton, 4, 1, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.co2LineEdit1, 4, 2, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.o2LineEdit1, 4, 3, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.extractButton, 5, 1, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.co2LineEdit2, 5, 2, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.o2LineEdit2, 5, 3, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.co2LineEdit3, 6, 2, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.o2LineEdit3, 6, 3, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.co2LineEdit4, 7, 2, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.o2LineEdit4, 7, 3, alignment=QtCore.Qt.AlignCenter)
-
-        #################################################################################################
-
-
-
         ########################{CO2 Zero Blank Extract} AND {CO2 O2 LineEdit Layout} ###################
         
         
@@ -656,7 +604,6 @@ class LabView(QtWidgets.QMainWindow):
 
         self.calculationButtonsFrameHLayout = QtWidgets.QHBoxLayout()
         self.calculationButtonsFrameHLayout.addLayout(self.o2ZeroCo2CalGridLayout)
-        self.calculationButtonsFrameHLayout.addLayout(self.co2o2GridLayout)
         self.calculationButtonsFrameHLayout.addLayout(self.tableVelocityConcentrationAddPurgeHLayout)
 
         self.calculationButtonsFrame.setLayout(self.calculationButtonsFrameHLayout)
@@ -778,12 +725,6 @@ class LabView(QtWidgets.QMainWindow):
         # CO2 Zero button connect method
         self.co2ZeroButton.clicked.connect(self.co2ZeroButtonPressed)
         self.co2SampleButton.clicked.connect(self.co2SampleButtonPressed)
-
-        # Blank button connect method
-        self.blankButton.clicked.connect(self.blankButtonPressed)
-
-        # Extract button connect method
-        self.extractButton.clicked.connect(self.extractButtonPressed)
 
         # Add to Table connect method
         self.addToTableButton.clicked.connect(self.addToTableButtonPressed)
@@ -1156,138 +1097,6 @@ class LabView(QtWidgets.QMainWindow):
         else:
             self.throwUndefined(self.o2CalibrationLineEdit)
 
-
-    def blankButtonPressed(self):
-        """
-        Executed when the Blank button is pressed.
-        Finds the slope from Mass 44 and Mass 45 from the points on the mean bars.
-        :param {_ : }
-        :return -> None
-        """
-
-        # Get the left and right x points from the mean bars
-        xleft, xright = self.meanBar.getRegion()
-
-        # if no data exists, return undefined
-        if (not self.sharedData.dataPoints.keys()):
-            self.throwUndefined(self.co2LineEdit1)
-            self.throwUndefined(self.o2LineEdit1)
-            return
-
-        # if one or both of the x values is not in the range of the dataset, return undefined
-        elif (xright < list(self.sharedData.dataPoints.keys())[0] or xleft > list(self.sharedData.dataPoints.keys())[-1] or
-                 xleft < list(self.sharedData.dataPoints.keys())[0] or xright > list(self.sharedData.dataPoints.keys())[-1]):
-            
-            self.throwUndefined(self.co2LineEdit1)
-            self.throwUndefined(self.o2LineEdit1)
-            self.co2Blank = 0
-            self.o2Blank = 0
-            return
-
-        else:
-
-            # Find the closest x values in the data to the x values from the mean bars
-            xleft = min(self.sharedData.dataPoints.keys(), key=lambda x:abs(x-xleft))
-            xright = min(self.sharedData.dataPoints.keys(), key=lambda x:abs(x-xright))
-
-            # Calculate slope between these two points for graph Mass 44
-            self.co2Blank = (self.sharedData.dataPoints[xright][3] - self.sharedData.dataPoints[xleft][3]) / (xright - xleft)
-            
-            # Calculate slope between these two points for graph Mass 32
-            self.o2Blank = (self.sharedData.dataPoints[xright][0] - self.sharedData.dataPoints[xleft][0]) / (xright - xleft)
-
-            # Set CO2 and O2 line edits
-            self.co2LineEdit1.setText(str(round(self.co2Blank, 4)))
-            self.o2LineEdit1.setText(str(round(self.o2Blank, 4)))
-
-
-    def extractButtonPressed(self):
-        """
-        Executed when the Extract button is pressed.
-        Fills in the first line of line edits with the extract values (slope values taken from the mean bars).
-        Second line of line edits are filled with the extract - blank.
-        Third line of line edits filled with mean values from Mass 44 and Mass32 from the mean bars.
-        Lastly calculates and fills in velocities and concentrations.
-        :param {_ : }
-        :return -> None
-        """
-
-        ################ First Line ###############
-
-        # Get the left and right x points from the mean bars
-        xleft, xright = self.meanBar.getRegion()
-
-        # if no data exists, return undefined
-        if (not self.sharedData.dataPoints.keys()):
-            self.throwUndefined(self.co2LineEdit2)
-            self.throwUndefined(self.o2LineEdit2)
-            return
-
-        # if one or both of the x values is not in the range of the dataset, return undefined
-        elif (xright < list(self.sharedData.dataPoints.keys())[0] or xleft > list(self.sharedData.dataPoints.keys())[-1] or
-                 xleft < list(self.sharedData.dataPoints.keys())[0] or xright > list(self.sharedData.dataPoints.keys())[-1]):
-            
-            self.throwUndefined(self.co2LineEdit2)
-            self.throwUndefined(self.o2LineEdit2)
-            return
-
-        # Find the closest x values in the data to the x values from the mean bars
-        xleft = min(self.sharedData.dataPoints.keys(), key=lambda x:abs(x-xleft))
-        xright = min(self.sharedData.dataPoints.keys(), key=lambda x:abs(x-xright))
-
-        # Calculate slope between these two points for graph Mass 44
-        self.co2Extract = (self.sharedData.dataPoints[xright][3] - self.sharedData.dataPoints[xleft][3]) / (xright - xleft)
-        
-        # Calculate slope between these two points for graph Mass 32
-        self.o2Extract = (self.sharedData.dataPoints[xright][0] - self.sharedData.dataPoints[xleft][0]) / (xright - xleft)
-
-        # Set CO2 and O2 line edits
-        self.co2LineEdit2.setText(str(round(self.co2Extract, 4)))
-        self.o2LineEdit2.setText(str(round(self.o2Extract, 4)))
-
-        ################ Secone Line ###############
-        
-        # if Blank has not been found yet, return undefined
-        if (self.co2Blank == 0):
-            self.throwUndefined(self.co2LineEdit3)
-            self.throwUndefined(self.o2LineEdit3)
-            return
-
-        # calculate net rate of consumption for CO2 and O2
-        self.co2ConsumptionRate = self.co2Extract - self.co2Blank
-        self.o2ConsumptionRate = self.o2Extract - self.o2Blank
-
-        # Set Line Edits
-        self.co2LineEdit3.setText(str(round(self.co2ConsumptionRate, 4)))
-        self.o2LineEdit3.setText(str(round(self.o2ConsumptionRate, 4)))
-
-        ################ Third Line ###############
-
-        # Get mean value from mean bars from Mass 44 and Mass 32 graphs
-        co2Reading = self.meanButtonPressed(self.co2LineEdit4, 3)
-        o2Reading = self.meanButtonPressed(self.o2LineEdit4, 0)
-
-        ######### Populate Velocities and Concentrations for Table ########
-
-        # If the o2 calibration or co2 calibration are not defined, return undefined
-        if (self.o2Calibration == 0 or self.co2BufferCalibration == 0 or self.biCarbCo2Ratio == 0):
-            self.throwUndefined(self.percentCO2LineEdit2)
-            self.throwUndefined(self.uBar2LineEdit)
-            self.throwUndefined(self.co2ConcentrationpercentCO2LineEdit2)
-            self.throwUndefined(self.o2ConcentrationpercentCO2LineEdit2)
-            return
-        
-        self.vO = self.o2ConsumptionRate * self.o2Calibration * -1
-        self.vC = self.co2ConsumptionRate * self.co2BufferCalibration * -1
-        self.co2Concentration = (self.co2BufferCalibration * (co2Reading - self.co2Zero44Reading)) / self.biCarbCo2Ratio
-        self.o2Concentration = self.o2Calibration * o2Reading
-
-        # Set Line Edits
-
-        self.percentCO2LineEdit2.setText(str(round(self.vO, 4)))
-        self.uBar2LineEdit.setText(str(round(self.vC, 4)))
-        self.co2ConcentrationpercentCO2LineEdit2.setText(str(round(self.co2Concentration, 4)))
-        self.o2ConcentrationpercentCO2LineEdit2.setText(str(round(self.o2Concentration, 4)))
 
     def addToTableButtonPressed(self):
         """
