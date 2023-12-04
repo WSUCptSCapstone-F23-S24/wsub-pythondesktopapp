@@ -706,9 +706,6 @@ class LabView(QtWidgets.QMainWindow):
         self.curve2 = Curve("Mass 44", [], pg.mkPen(color="#4363d8", width=4), self.realTimeGraph)
         self.curve2.plotCurve()
 
-        self.curve3 = Curve("Mass 32", [], pg.mkPen(color="#800000", width=4), self.uBarGraph)
-        self.curve3.plotCurve()
-
         self.curve4 = Curve("Mass 44", [], pg.mkPen(color="#4363d8", width=4), self.uBarGraph)
         self.curve4.plotCurve()
 
@@ -862,7 +859,7 @@ class LabView(QtWidgets.QMainWindow):
         
         self.plotAllButtonThread.start()
 
-        self.plotAllThread.newDataPointSignal.connect(self.update_plot_data)
+        self.plotAllThread.newDataPointSignal.connect(self.update_main_plot_data)
         self.plotAllThread.throwOutOfDataExceptionSignal.connect(self.throwOutOfDataException)
         self.plotAllThread.throwFolderNotSelectedExceptionSignal.connect(self.throwFolderNotSelectedException)
         self.plotAllThread.filesParsedSignal.connect(self.startNewFileNotifier)
@@ -915,13 +912,13 @@ class LabView(QtWidgets.QMainWindow):
 
             # Connecting the signals to the methods.
             self.worker.plotEndBitSignal.connect(self.outOfDataCondition)
-            self.worker.newDataPointSignal.connect(self.update_plot_data)
+            self.worker.newDataPointSignal.connect(self.update_main_plot_data)
 
             self.worker2.plotEndBitSignal.connect(self.outOfDataCondition)
-            self.worker2.newDataPointSignal.connect(self.update_plot_data)
+            self.worker2.newDataPointSignal.connect(self.update_ubar_plot_data)
 
             self.worker3.plotEndBitSignal.connect(self.outOfDataCondition)
-            self.worker3.newDataPointSignal.connect(self.update_plot_data)
+            self.worker3.newDataPointSignal.connect(self.update_main_plot_data)
 
             # Deleting the reference of the worker and the thread from the memory to free up space.
             self.worker.finished.connect(self.worker.deleteLater)
@@ -943,7 +940,6 @@ class LabView(QtWidgets.QMainWindow):
             self.uBarPlotthread.start()
 
             # Unhide graphs
-            self.curve3.unhide()
             self.curve4.unhide()
             self.curve5.unhide()
             self.curve6.unhide()
@@ -1470,7 +1466,7 @@ class LabView(QtWidgets.QMainWindow):
         else:
             pass
 
-    def update_plot_data(self, dataPoints):
+    def update_main_plot_data(self, dataPoints):
     
            # Updates the real time plot after reading each row of data points from the file ONLY IF the pause bit is False.
            # :param {x_value : Float} -> x point value of the data point.
@@ -1488,7 +1484,6 @@ class LabView(QtWidgets.QMainWindow):
 
             # Getting the x coordinate and list of y coordinates from the tuple
             x, y = dataPoint
-            y[3] = y[3] * 2
 
             # Updating the data points in the singleton class.
             self.sharedData.dataPoints[x] = y
@@ -1527,11 +1522,85 @@ class LabView(QtWidgets.QMainWindow):
         self.curve1.updateDataPoints(x, y_value[0])
         self.curve2.updateDataPoints(x, y_value[3])
 
-        self.curve3.updateDataPoints(x, y_value[0])
-        self.curve4.updateDataPoints(x, y_value[3])
+        
+        #self.curve4.updateDataPoints(x, y_value[3])
 
         self.curve5.updateDataPoints(x, y_value[0])
         self.curve6.updateDataPoints(x, y_value[3])
+        # print("Time taken plot all the points: ", time()-start)
+
+    def update_ubar_plot_data(self, dataPoints):
+
+        # Updates the ubar time plot after reading each row of data points from the file ONLY IF the pause bit is False.
+        # :param {x_value : Float} -> x point value of the data point.
+        # :param {y_value : Float} -> list of the y point values of the data point for different plots.
+        # :return -> None
+
+
+        y_value = [[],[],[],[],[],[],[],[]]
+
+        
+
+        # Getting the next data points from the list of all the points emitted by the worker thread.
+        while len(dataPoints) != 0:
+
+            # Popping the first data points
+            dataPoint = dataPoints.pop(0)
+
+            # Getting the x coordinate and list of y coordinates from the tuple
+            x, y = dataPoint
+
+            co2Volt = 0
+            co2Zero = 0
+
+            if self.co2VoltLineEdit.text():
+                co2Volt = float(self.co2VoltLineEdit.text())
+
+            if self.co2VoltLineEdit.text():
+                co2Zero = float(self.co2ZeroLineEdit.text())
+
+            print(y)
+            
+            percentCO2 = Calculations.calculatePercentCO2(co2Volt, y[3], co2Zero)
+            uBar = Calculations.calculateUbarCO2(percentCO2)
+            y[3] = uBar
+            print(y)
+            # Updating the data points in the singleton class.
+            #self.sharedData.dataPoints[x] = y
+
+            # self.stopwatch.set_time(x)
+
+            for i in range(len(y_value)):
+                y_value[i].append(y[i])
+
+            # print(x_value, y_value)
+        # x_value, y_value = self.getNextPoint(self.dataObj)
+
+        
+        # Updating all the curves
+        # start = time()
+        yAllMax = max(y)
+        yAllMin = min(y)
+
+        if self.yAllMin == None and self.yAllMax == None:
+            self.yAllMax = yAllMax
+            self.yAllMin = yAllMin
+            self.isYChanged = True
+            
+        else:
+
+            if yAllMin < self.yAllMin:
+                self.yAllMin = yAllMin
+                self.isYChanged = True
+
+            if yAllMax > self.yAllMax:
+                self.yAllMax = yAllMax
+                self.isYChanged = True
+        
+        self.changeGraphRange(x)
+
+
+        self.curve4.updateDataPoints(x, y_value[3])
         # print("Time taken plot all the points: ", time()-start)
 
     def changeGraphRange(self, x):
