@@ -132,6 +132,8 @@ class LabView(QtWidgets.QMainWindow):
 
         self.co2Zero44Reading = 0
         self.co2SampleReading = 0
+
+        self.lastUbar = 0
         
 
         self.keepCals = False
@@ -813,47 +815,24 @@ class LabView(QtWidgets.QMainWindow):
 
             # Step 2: Create a QThread object
             self.realTimePlotthread = QThread(parent=self)
-            self.uBarPlotthread = QThread(parent=self)
-            self.DuBarPlotthread = QThread(parent=self)
 
             # Step 3: Create a worker object
             self.worker = Worker(self)
-            self.worker2 = Worker(self)
-            self.worker3 = Worker(self)
             # Step 4: Move worker to the thread
             self.worker.moveToThread(self.realTimePlotthread)
-            self.worker2.moveToThread(self.uBarPlotthread)
-            self.worker3.moveToThread(self.DuBarPlotthread)
 
             # Step 5: Connect signals and slots and start the stop watch
             self.realTimePlotthread.started.connect(self.worker.run)
             self.worker.finished.connect(self.realTimePlotthread.quit)
 
-            self.uBarPlotthread.started.connect(self.worker2.run)
-            self.worker2.finished.connect(self.uBarPlotthread.quit)
-
-            self.DuBarPlotthread.started.connect(self.worker3.run)
-            self.worker3.finished.connect(self.DuBarPlotthread.quit)
-
             # Connecting the signals to the methods.
             self.worker.plotEndBitSignal.connect(self.outOfDataCondition)
             self.worker.newDataPointSignal.connect(self.update_main_plot_data)
 
-            self.worker2.plotEndBitSignal.connect(self.outOfDataCondition)
-            self.worker2.newDataPointSignal.connect(self.update_ubar_plot_data)
-
-            self.worker3.plotEndBitSignal.connect(self.outOfDataCondition)
-            self.worker3.newDataPointSignal.connect(self.update_main_plot_data)
 
             # Deleting the reference of the worker and the thread from the memory to free up space.
             self.worker.finished.connect(self.worker.deleteLater)
             self.realTimePlotthread.finished.connect(self.realTimePlotthread.deleteLater)
-
-            self.worker2.finished.connect(self.worker2.deleteLater)
-            self.uBarPlotthread.finished.connect(self.uBarPlotthread.deleteLater)
-
-            self.worker3.finished.connect(self.worker3.deleteLater)
-            self.DuBarPlotthread.finished.connect(self.DuBarPlotthread.deleteLater)
 
             # Step 6: Start the thread
             if self.stopwatch.paused == True:
@@ -862,7 +841,6 @@ class LabView(QtWidgets.QMainWindow):
                 self.stopwatch.start()
 
             self.realTimePlotthread.start()
-            self.uBarPlotthread.start()
 
             # Unhide graphs
             self.curve3.unhide()
@@ -876,8 +854,6 @@ class LabView(QtWidgets.QMainWindow):
             # change-file-reading
             # Write code to recieve the signal and start a new thread for dirwatch.
             self.worker.filesParsedSignal.connect(self.startNewFileNotifier)
-            self.worker2.filesParsedSignal.connect(self.startNewFileNotifier)
-            self.worker3.filesParsedSignal.connect(self.startNewFileNotifier)
             
         else:
             self.throwFolderNotSelectedException()
@@ -1256,6 +1232,9 @@ class LabView(QtWidgets.QMainWindow):
         else:
             pass
 
+
+    
+
     def update_main_plot_data(self, dataPoints):
     
            # Updates the real time plot after reading each row of data points from the file ONLY IF the pause bit is False.
@@ -1263,9 +1242,12 @@ class LabView(QtWidgets.QMainWindow):
            # :param {y_value : Float} -> list of the y point values of the data point for different plots.
            # :return -> None
     
-
+        # y = [y1,y2,y3,y4,y5,y6,y7,y8]
         y_value = [[],[],[],[],[],[],[],[]]
+        ubar_y_value = []
+        dubar_y_value = []
 
+    
         # Getting the next data points from the list of all the points emitted by the worker thread.
         while len(dataPoints) != 0:
 
@@ -1279,14 +1261,47 @@ class LabView(QtWidgets.QMainWindow):
             self.sharedData.dataPoints[x] = y
 
             # self.stopwatch.set_time(x)
-
+            print(y)
             for i in range(len(y_value)):
                 y_value[i].append(y[i])
+                #ubar_y_value[i].append(y[i])
+
+             # y - list of float - length 8
+        
+            # y_value - list of list - length 8[8]
+            
 
             # print(x_value, y_value)
-        # x_value, y_value = self.getNextPoint(self.dataObj)
+            # x_value, y_value = self.getNextPoint(self.dataObj)
 
-        
+            # Transform to reflect uBar
+
+            temp_y = y.copy()
+            co2Volt = 0
+            co2Zero = 0
+
+            if self.co2VoltLineEdit.text():
+                co2Volt = float(self.co2VoltLineEdit.text())
+
+            if self.co2ZeroLineEdit.text():
+                co2Zero = float(self.co2ZeroLineEdit.text())
+            
+            print("Percent CO2 params:", co2Volt, y[3], co2Zero)
+            
+            percentCo2 = Calculations.calculatePercentCO2(co2Volt, y[3], co2Zero)
+            uBarCO2 = Calculations.calculateUbarCO2(percentCo2)
+            print("UbarCO2: ", uBarCO2)
+            temp_y[3] = uBarCO2
+            print(y[3])
+            print(temp_y[3])
+            ubar_y_value.append(temp_y[3])
+
+
+            #for i in range(len(ubar_y_value)):
+                #ubar_y_value[i].append(temp_y[i])
+
+            dubar_y_value.append(self.lastUbar - temp_y[3])
+            self.lastUbar = temp_y[3]
         # Updating all the curves
         # start = time()
         yAllMax = max(y)
@@ -1311,9 +1326,18 @@ class LabView(QtWidgets.QMainWindow):
         
         self.curve1.updateDataPoints(x, y_value[0])
         self.curve2.updateDataPoints(x, y_value[3])
+        self.curve3.updateDataPoints(x, ubar_y_value)
+        self.curve4.updateDataPoints(x, dubar_y_value)
 
-        #self.curve4.updateDataPoints(x, y_value[3])
-        # print("Time taken plot all the points: ", time()-start)
+        
+        # Updating the data points in the singleton class.
+        #self.sharedData.dataPoints[x] = y
+
+        # self.stopwatch.set_time(x)
+
+     
+
+        
 
     def update_ubar_plot_data(self, dataPoints):
 
@@ -1390,7 +1414,7 @@ class LabView(QtWidgets.QMainWindow):
         self.curve3.updateDataPoints(x, y_value[3])
         # print("Time taken plot all the points: ", time()-start)
 
-    def update_Dubar_plot_data(self, dataPoints):
+    def update_dubar_plot_data(self, dataPoints):
 
         # Updates the ubar time plot after reading each row of data points from the file ONLY IF the pause bit is False.
         # :param {x_value : Float} -> x point value of the data point.
