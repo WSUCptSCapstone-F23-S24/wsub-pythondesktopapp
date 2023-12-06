@@ -91,9 +91,14 @@ class LabView(QtWidgets.QMainWindow):
         self.delay = 200
         self.stopwatch = Stopwatch()
         self.firstPoint = False
-        self.yAllMax = None
-        self.yAllMin = None
-        self.isYChanged = False
+
+        #self.yRealMax = None
+        #self.yRealMin = None
+        #self.isRealYChanged = False
+        self.yMinList = [None, None, None]
+        self.yMaxList = [None, None, None]
+        self.isYChanged = [False, False, False]
+
         self.fileCheckThreadStarted = False
 
         self.application_state = "Idle"
@@ -642,10 +647,10 @@ class LabView(QtWidgets.QMainWindow):
         self.curve2 = Curve("Mass 44", [], pg.mkPen(color="#4363d8", width=4), self.realTimeGraph)
         self.curve2.plotCurve()
 
-        self.curve3 = Curve("Mass 44", [], pg.mkPen(color="#4363d8", width=4), self.uBarGraph)
+        self.curve3 = Curve("uBar", [], pg.mkPen(color="#FFFFFF", width=4), self.uBarGraph)
         self.curve3.plotCurve()
 
-        self.curve4 = Curve("Mass 44", [], pg.mkPen(color="#4363d8", width=4), self.DuBarGraph)
+        self.curve4 = Curve("D[uBar]", [], pg.mkPen(color="#FFFFFF", width=4), self.DuBarGraph)
         self.curve4.plotCurve()
 
         # Initializing the mean bars.
@@ -761,7 +766,7 @@ class LabView(QtWidgets.QMainWindow):
         if self.realTimeGraph.graphInteraction == False:
             return
         elif self.realTimeGraph.graphInteraction == True:
-            self.isYChanged = True
+            self.isRealYChanged = True
             self.realTimeGraph.graphInteraction = False
             
 
@@ -1295,6 +1300,7 @@ class LabView(QtWidgets.QMainWindow):
             print(y[3])
             print(temp_y[3])
             ubar_y_value.append(temp_y[3])
+            print("ubar len: ",len(ubar_y_value))
 
 
             #for i in range(len(ubar_y_value)):
@@ -1304,25 +1310,15 @@ class LabView(QtWidgets.QMainWindow):
             self.lastUbar = temp_y[3]
         # Updating all the curves
         # start = time()
-        yAllMax = max(y)
-        yAllMin = min(y)
-
-        if self.yAllMin == None and self.yAllMax == None:
-            self.yAllMax = yAllMax
-            self.yAllMin = yAllMin
-            self.isYChanged = True
-            
-        else:
-
-            if yAllMin < self.yAllMin:
-                self.yAllMin = yAllMin
-                self.isYChanged = True
-
-            if yAllMax > self.yAllMax:
-                self.yAllMax = yAllMax
-                self.isYChanged = True
+        
+        self.checkMinMax(min(y), max(y), 0)
+        self.checkMinMax(min(ubar_y_value), max(ubar_y_value), 1)
+        self.checkMinMax(min(dubar_y_value), max(dubar_y_value), 2)
+                
         
         self.changeGraphRange(x)
+        #self.changeGraphRange2(x, self.uBarGraph, ubar_y_value)
+        #self.changeGraphRange2(x, self.DuBarGraph, dubar_y_value)
         
         self.curve1.updateDataPoints(x, y_value[0])
         self.curve2.updateDataPoints(x, y_value[3])
@@ -1334,196 +1330,75 @@ class LabView(QtWidgets.QMainWindow):
         #self.sharedData.dataPoints[x] = y
 
         # self.stopwatch.set_time(x)
-
-     
-
-        
-
-    def update_ubar_plot_data(self, dataPoints):
-
-        # Updates the ubar time plot after reading each row of data points from the file ONLY IF the pause bit is False.
-        # :param {x_value : Float} -> x point value of the data point.
-        # :param {y_value : Float} -> list of the y point values of the data point for different plots.
-        # :return -> None
-
-
-        y_value = [[],[],[],[],[],[],[],[]]
-
-        
-
-        # Getting the next data points from the list of all the points emitted by the worker thread.
-        while len(dataPoints) != 0:
-
-            # Popping the first data points
-            dataPoint = dataPoints.pop(0)
-
-            # Getting the x coordinate and list of y coordinates from the tuple
-            x, y = dataPoint
-
-            # Transform to reflect uBar
-            co2Volt = 0
-            co2Zero = 0
-
-            if self.co2VoltLineEdit.text():
-                co2Volt = float(self.co2VoltLineEdit.text())
-
-            if self.co2VoltLineEdit.text():
-                co2Zero = float(self.co2ZeroLineEdit.text())
-
-            print(y)
-            
-            percentCo2 = Calculations.calculatePercentCO2(co2Volt, y[3], co2Zero)
-            uBarCO2 = Calculations.calculateUbarCO2(percentCo2)
-            y[3] = uBarCO2
-            print(y)
-            # Updating the data points in the singleton class.
-            #self.sharedData.dataPoints[x] = y
-
-            # self.stopwatch.set_time(x)
-
-            for i in range(len(y_value)):
-                y_value[i].append(y[i])
-
-            # print(x_value, y_value)
-        # x_value, y_value = self.getNextPoint(self.dataObj)
-
-        
-        # Updating all the curves
-        # start = time()
-        yAllMax = max(y)
-        yAllMin = min(y)
-
-        if self.yAllMin == None and self.yAllMax == None:
-            self.yAllMax = yAllMax
-            self.yAllMin = yAllMin
-            self.isYChanged = True
+    
+    # graph 0 = real
+    # graph 1 = ubar
+    # graph 2 = dubar
+    def checkMinMax(self, min, max, graph):
+        if self.yMinList[graph] == None and self.yMaxList[graph] == None:
+            self.yMaxList[graph] = max
+            self.yMinList[graph] = min
+            self.isYChanged[graph] = True
             
         else:
 
-            if yAllMin < self.yAllMin:
-                self.yAllMin = yAllMin
-                self.isYChanged = True
+            if min < self.yMinList[graph]:
+                self.yMinList[graph] = min
+                self.isYChanged[graph] = True
 
-            if yAllMax > self.yAllMax:
-                self.yAllMax = yAllMax
-                self.isYChanged = True
-        
-        self.changeGraphRange(x)
-
-
-        self.curve3.updateDataPoints(x, y_value[3])
-        # print("Time taken plot all the points: ", time()-start)
-
-    def update_dubar_plot_data(self, dataPoints):
-
-        # Updates the ubar time plot after reading each row of data points from the file ONLY IF the pause bit is False.
-        # :param {x_value : Float} -> x point value of the data point.
-        # :param {y_value : Float} -> list of the y point values of the data point for different plots.
-        # :return -> None
-
-
-        y_value = [[],[],[],[],[],[],[],[]]
-
-        
-
-        # Getting the next data points from the list of all the points emitted by the worker thread.
-        while len(dataPoints) != 0:
-
-            # Popping the first data points
-            dataPoint = dataPoints.pop(0)
-
-            # Getting the x coordinate and list of y coordinates from the tuple
-            x, y = dataPoint
-
-            # Transform data to reflect Dubar
-            co2Volt = 0
-            co2Zero = 0
-
-            if self.co2VoltLineEdit.text():
-                co2Volt = float(self.co2VoltLineEdit.text())
-
-            if self.co2VoltLineEdit.text():
-                co2Zero = float(self.co2ZeroLineEdit.text())
-
-            print(y)
-            
-            percentCo2 = Calculations.calculatePercentCO2(co2Volt, y[3], co2Zero)
-            uBarCO2 = Calculations.calculateUbarCO2(percentCo2)
-            y[3] = uBarCO2
-            print(y)
-            # Updating the data points in the singleton class.
-            #self.sharedData.dataPoints[x] = y
-
-            # self.stopwatch.set_time(x)
-
-            for i in range(len(y_value)):
-                y_value[i].append(y[i])
-
-            # print(x_value, y_value)
-        # x_value, y_value = self.getNextPoint(self.dataObj)
-
-        
-        # Updating all the curves
-        # start = time()
-        yAllMax = max(y)
-        yAllMin = min(y)
-
-        if self.yAllMin == None and self.yAllMax == None:
-            self.yAllMax = yAllMax
-            self.yAllMin = yAllMin
-            self.isYChanged = True
-            
-        else:
-
-            if yAllMin < self.yAllMin:
-                self.yAllMin = yAllMin
-                self.isYChanged = True
-
-            if yAllMax > self.yAllMax:
-                self.yAllMax = yAllMax
-                self.isYChanged = True
-        
-        self.changeGraphRange(x)
-
-
-        self.curve4.updateDataPoints(x, y_value[3])
-        # print("Time taken plot all the points: ", time()-start)
-
+            if max > self.yMaxList[graph]:
+                self.yMaxList[graph] = max
+                self.isYChanged[graph] = True
+    
     def changeGraphRange(self, x):
         
         # Changing X Axes Scale
-        self.currentXRange = self.realTimeGraph.getXAxisRange()
+        realXRange = self.realTimeGraph.getXAxisRange()
+        ubarXRange = self.uBarGraph.getXAxisRange()
+        dubarXRange = self.DuBarGraph.getXAxisRange()
 
-        if x > self.currentXRange[1]:
-            
-            currentXScale = self.currentXRange[1] - self.currentXRange[0]
+
+        if x > realXRange[1]:
+            currentXScale = realXRange[1] - realXRange[0]
             # print("CurrentXScale = ", currentXScale)
-            self.currentXRange = [self.currentXRange[0] + currentXScale, self.currentXRange[1] + currentXScale]
+            realXRange = [realXRange[0] + currentXScale, realXRange[1] + currentXScale]
             if not self.realTimeGraph.graphInteraction:
-                self.realTimeGraph.setNewXRange(self.currentXRange[0], self.currentXRange[1])
+                self.realTimeGraph.setNewXRange(realXRange[0], realXRange[1])
+
+        if x > ubarXRange[1]:
+            currentXScale = ubarXRange[1] - ubarXRange[0]
+            # print("CurrentXScale = ", currentXScale)
+            ubarXRange = [ubarXRange[0] + currentXScale, ubarXRange[1] + currentXScale]
             if not self.uBarGraph.graphInteraction:
-                self.uBarGraph.setNewXRange(self.currentXRange[0], self.currentXRange[1])
+                self.uBarGraph.setNewXRange(ubarXRange[0], ubarXRange[1])
+
+        if x > dubarXRange[1]:
+            currentXScale = dubarXRange[1] - dubarXRange[0]
+            # print("CurrentXScale = ", currentXScale)
+            dubarXRange = [dubarXRange[0] + currentXScale, dubarXRange[1] + currentXScale]
             if not self.DuBarGraph.graphInteraction:
-                self.DuBarGraph.setNewXRange(self.currentXRange[0], self.currentXRange[1])
+                self.DuBarGraph.setNewXRange(dubarXRange[0], dubarXRange[1])
 
         # Changing Y Axes Scale:
 
-        if self.isYChanged:
+        if self.isYChanged[0]:
             if not self.realTimeGraph.graphInteraction:
-                offsetMin = (20*self.yAllMin)/100
-                offsetMax = (20*self.yAllMax)/100
-                self.realTimeGraph.setNewYRange(self.yAllMin-offsetMin, self.yAllMax+offsetMax)
-                self.isYChanged = False
+                offsetMin = (20*self.yMinList[0])/100
+                offsetMax = (20*self.yMaxList[0])/100
+                self.realTimeGraph.setNewYRange(self.yMinList[0]-offsetMin, self.yMaxList[0]+offsetMax)
+                self.isYChanged[0] = False
+        if self.isYChanged[1]:
             if not self.uBarGraph.graphInteraction:
-                offsetMin = (20*self.yAllMin)/100
-                offsetMax = (20*self.yAllMax)/100
-                self.uBarGraph.setNewYRange(self.yAllMin-offsetMin, self.yAllMax+offsetMax)
-                self.isYChanged = False
+                offsetMin = (20*self.yMinList[1])/100
+                offsetMax = (20*self.yMaxList[1])/100
+                self.realTimeGraph.setNewYRange(self.yMinList[1]-offsetMin, self.yMaxList[1]+offsetMax)
+                self.isYChanged[1] = False
+        if self.isYChanged[2]:
             if not self.DuBarGraph.graphInteraction:
-                offsetMin = (20*self.yAllMin)/100
-                offsetMax = (20*self.yAllMax)/100
-                self.DuBarGraph.setNewYRange(self.yAllMin-offsetMin, self.yAllMax+offsetMax)
-                self.isYChanged = False
+                offsetMin = (20*self.yMinList[2])/100
+                offsetMax = (20*self.yMaxList[2])/100
+                self.realTimeGraph.setNewYRange(self.yMinList[2]-offsetMin, self.yMaxList[2]+offsetMax)
+                self.isYChanged[2] = False
     
 
     def on_wheel_event(self,event, axis=1):
@@ -1984,9 +1859,19 @@ class LabView(QtWidgets.QMainWindow):
         self.delay = 200
         self.stopwatch = Stopwatch()
         self.firstPoint = False
-        self.yAllMax = None
-        self.yAllMin = None
-        self.isYChanged = False
+        
+        self.yRealMax = None
+        self.yRealMin = None
+        self.isRealYChanged = False
+
+        self.yUbarMax = None
+        self.yUbarMin = None
+        self.isUbarYChanged = False
+
+        self.yDubarMax = None
+        self.yDubarMin = None
+        self.isDubarYChanged = False
+        
         self.fileCheckThreadStarted = False
         self.speedSlider.setSliderPosition(100)
         self.speedSlider.setValue(100)
