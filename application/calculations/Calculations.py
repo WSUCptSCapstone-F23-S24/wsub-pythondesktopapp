@@ -1,3 +1,4 @@
+
 """
 __author__ = "Ritik Agarwal, Zoe Parker"
 __credits__ = ["Ritik Agarwal", "Zoe Parker"]
@@ -90,9 +91,9 @@ class Calculations:
         co2Volt2 = (1/28)/mvdiff2
         co2Volt3 = (1/28)/mvdiff3
         average = (co2Volt1 + co2Volt2 + co2Volt3)/3
-        return round(average, 3)
+        return average
  
-
+        
     @staticmethod
     def calculatePercentCO2(calibration, sample, zero):
         """
@@ -100,17 +101,17 @@ class Calculations:
         """
         
         percentCO2 = calibration * (sample - zero)
-        return round(percentCO2, 3)
+        return percentCO2
     
     
     @staticmethod
     def calculateUbarCO2(percentCO2):
         """
-        Calculates and returns the uBar CO2 concentration from the %CO2.
+        Calculates and returns the ubar CO2 concentration from the %CO2.
         """
         
-        uBarCO2 = percentCO2 * 9200
-        return round(uBarCO2, 3)
+        ubarCO2 = percentCO2 * 9200
+        return ubarCO2
 
 
     

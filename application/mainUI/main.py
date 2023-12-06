@@ -127,10 +127,8 @@ class LabView(QtWidgets.QMainWindow):
         self.o2ConsumptionRate = 0
 
         # Initialize CO2 and O2 rate of consumption and concentrations
-        self.vC = 0
-        self.vO = 0
-        self.co2Concentration = 0
-        self.o2Concentration = 0
+        self.percentCO2 = 0
+        self.uBarCO2 = 0
 
         self.co2Zero44Reading = 0
         self.co2SampleReading = 0
@@ -383,7 +381,7 @@ class LabView(QtWidgets.QMainWindow):
         self.uBarGraph = Graph(100,180)
         self.uBarGraph.setLabel(axis='left', text = 'uBar')
         self.uBarGraph.setLabel(axis='bottom', text = 'Time (s)')
-        self.uBarGraph.getViewBox().wheelEvent = self.on_wheel_event
+        #self.uBarGraph.getViewBox().wheelEvent = self.on_wheel_event
         self.uBarGraphVLayout = QtWidgets.QVBoxLayout()
         self.uBarGraphVLayout.setContentsMargins(0, 40, 0, 0)
         self.uBarGraphVLayout.addWidget(self.uBarGraph)
@@ -397,7 +395,7 @@ class LabView(QtWidgets.QMainWindow):
         self.DuBarGraph = Graph(100,180)
         self.DuBarGraph.setLabel(axis='left', text = 'D[uBar]')
         self.DuBarGraph.setLabel(axis='bottom', text = 'Time (s)')
-        self.DuBarGraph.getViewBox().wheelEvent = self.on_wheel_event
+        #self.DuBarGraph.getViewBox().wheelEvent = self.on_wheel_event
         self.DuBarGraphVLayout = QtWidgets.QVBoxLayout()
         self.DuBarGraphVLayout.setContentsMargins(0, 40, 0, 0)
         self.DuBarGraphVLayout.addWidget(self.DuBarGraph)
@@ -520,110 +518,37 @@ class LabView(QtWidgets.QMainWindow):
         self.o2ZeroCo2CalGridLayout.setRowStretch(7,1)
         self.o2ZeroCo2CalGridLayout.setRowStretch(8,1)
         self.o2ZeroCo2CalGridLayout.setRowStretch(9,1)
-        #################################################################################################
-
-        #################################################################################################
-
-
-
-
-        ########################{CO2 Zero Blank Extract} AND {CO2 O2 LineEdit Layout} #############################
-
-        # Initializing line edits
-        self.co2LineEdit1 = LineEdit()
-        self.co2LineEdit2 = LineEdit()
-        self.co2LineEdit3 = LineEdit()
-        self.co2LineEdit4 = LineEdit()
-        self.o2LineEdit1 = LineEdit()
-        self.o2LineEdit2 = LineEdit()
-        self.o2LineEdit3 = LineEdit()
-        self.o2LineEdit4 = LineEdit()
-
-        self.co2ZeroLineEdit1 = LineEdit()
-        self.co2ZeroLineEdit2 = LineEdit()
-
-        self.lineEditList.extend([self.co2LineEdit1, self.co2LineEdit2, self.co2LineEdit3, self.co2LineEdit4, self.o2LineEdit1, self.o2LineEdit2, self.o2LineEdit3, self.o2LineEdit4])
-        self.lineEditList.extend([self.co2ZeroLineEdit1, self.co2ZeroLineEdit2])
+        self.o2ZeroCo2CalGridLayout.setColumnStretch(0,1)
+        self.o2ZeroCo2CalGridLayout.setContentsMargins(2,3,200,0)
         
-        # Initializing QLabels
-        self.co2Label = QtWidgets.QLabel("CO2")
-        self.o2Label = QtWidgets.QLabel("O2")
-
-        self.co2Zero44Label =  QtWidgets.QLabel("CO2 Zero\n(Mass 44)")
-
-        self.blankButton = Button("Blank", 120, 26)
-        self.extractButton = Button("Extract", 120, 26)
-
-
-        # Creating a QGrid Layout
-        self.co2o2GridLayout = QtWidgets.QGridLayout()
-        self.co2o2GridLayout.addWidget(self.co2Zero44Label, 1, 2, 2, 1, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.co2ZeroButton, 2, 1, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.co2ZeroLineEdit1, 2, 2, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.co2ZeroLineEdit2, 2, 3, alignment=QtCore.Qt.AlignCenter)
-        
-        self.co2o2GridLayout.addWidget(self.co2Label, 3, 2, 2, 1, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.o2Label, 3, 3, 2, 1, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.blankButton, 4, 1, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.co2LineEdit1, 4, 2, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.o2LineEdit1, 4, 3, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.extractButton, 5, 1, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.co2LineEdit2, 5, 2, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.o2LineEdit2, 5, 3, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.co2LineEdit3, 6, 2, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.o2LineEdit3, 6, 3, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.co2LineEdit4, 7, 2, alignment=QtCore.Qt.AlignCenter)
-        self.co2o2GridLayout.addWidget(self.o2LineEdit4, 7, 3, alignment=QtCore.Qt.AlignCenter)
+        #################################################################################################
 
         #################################################################################################
+
 
 
 
         ########################{CO2 Zero Blank Extract} AND {CO2 O2 LineEdit Layout} ###################
         
-        # Module 1 concentration labels
-        self.percentCO2Label = QtWidgets.QLabel("%CO2")
-        self.ubarCO2Label = QtWidgets.QLabel("uBar CO2")
         
-        # Module 1 concentration text boxes
-        self.percentCO2LineEdit = LineEdit()
-        self.ubarCO2LineEdit = LineEdit()
-        
-        # Module 1 concentration grid layout
-        self.co2ConcentrationGridLayout = QtWidgets.QGridLayout()
-        self.co2ConcentrationGridLayout.addWidget(self.percentCO2Label, 1, 1, alignment=QtCore.Qt.AlignCenter)
-        self.co2ConcentrationGridLayout.addWidget(self.percentCO2LineEdit, 1, 2, alignment=QtCore.Qt.AlignCenter)
-        self.co2ConcentrationGridLayout.addWidget(self.ubarCO2Label, 2, 1, alignment=QtCore.Qt.AlignCenter)
-        self.co2ConcentrationGridLayout.addWidget(self.ubarCO2LineEdit, 2, 2, alignment=QtCore.Qt.AlignCenter)
         
         # unused leftover elements
         #Velocity and CO2 O2 Concentration Labels
-        self.percentCO2Label2 = QtWidgets.QLabel("%CO2")
-        self.uBar2Label = QtWidgets.QLabel("µBar2")
-        self.co2ConcentrationLabel = QtWidgets.QLabel("[CO2]")
-        self.o2ConcentrationLabel = QtWidgets.QLabel("[O2]")
+        self.percentCO2Label = QtWidgets.QLabel("%CO2")
+        self.uBar2Label = QtWidgets.QLabel("µBar CO2")
 
         #Velocity and CO2 O2 Concentration Text Edit
-        self.percentCO2LineEdit2 = LineEdit()
+        self.percentCO2LineEdit = LineEdit()
         self.uBar2LineEdit = LineEdit()
-        self.co2ConcentrationpercentCO2LineEdit2 = LineEdit()
-        self.o2ConcentrationpercentCO2LineEdit2 = LineEdit()
 
-        self.lineEditList.extend([self.percentCO2LineEdit2, self.uBar2LineEdit, self.co2ConcentrationpercentCO2LineEdit2, self.o2ConcentrationpercentCO2LineEdit2])
+        self.lineEditList.extend([self.percentCO2LineEdit, self.uBar2LineEdit])
 
         self.velocityConcentrationGridLayout = QtWidgets.QGridLayout()
-        self.velocityConcentrationGridLayout.addWidget(self.percentCO2Label2, 1, 1, alignment=QtCore.Qt.AlignCenter)
+        self.velocityConcentrationGridLayout.addWidget(self.percentCO2Label, 1, 1, alignment=QtCore.Qt.AlignCenter)
         self.velocityConcentrationGridLayout.addWidget(self.uBar2Label, 1, 2, alignment=QtCore.Qt.AlignCenter)
-        #self.velocityConcentrationGridLayout.addWidget(self.co2ConcentrationLabel, 1, 3, alignment=QtCore.Qt.AlignCenter)
-        #self.velocityConcentrationGridLayout.addWidget(self.o2ConcentrationLabel, 1, 4, alignment=QtCore.Qt.AlignCenter)
-        self.velocityConcentrationGridLayout.addWidget(self.percentCO2LineEdit2, 2, 1, alignment=QtCore.Qt.AlignCenter)
+        self.velocityConcentrationGridLayout.addWidget(self.percentCO2LineEdit, 2, 1, alignment=QtCore.Qt.AlignCenter)
         self.velocityConcentrationGridLayout.addWidget(self.uBar2LineEdit, 2, 2, alignment=QtCore.Qt.AlignCenter)
-        #self.velocityConcentrationGridLayout.addWidget(self.co2ConcentrationpercentCO2LineEdit2, 2, 3, alignment=QtCore.Qt.AlignCenter)
-        #self.velocityConcentrationGridLayout.addWidget(self.o2ConcentrationpercentCO2LineEdit2, 2, 4, alignment=QtCore.Qt.AlignCenter)
-        self.velocityConcentrationGridLayout.setColumnStretch(1,1)
-        self.velocityConcentrationGridLayout.setColumnStretch(2,1)
-        #self.velocityConcentrationGridLayout.setColumnStretch(3,1)
-        #self.velocityConcentrationGridLayout.setColumnStretch(4,1)
+
         
 
         # Add to table and Purge Button
@@ -645,10 +570,13 @@ class LabView(QtWidgets.QMainWindow):
         # Dummy row count
         #self.table.setRowCount(4)
         # set column count
-        self.table.setColumnCount(4)
+        self.table.setColumnCount(2)
+        self.table.setMaximumWidth(220)
+        
 
         self.tableVLayout = QtWidgets.QVBoxLayout()
         self.tableVLayout.addWidget(self.table)
+    
         
         # Table and addTable purgeTable layout
         self.tableVelocityConcentrationVLayout = QtWidgets.QVBoxLayout()
@@ -659,11 +587,10 @@ class LabView(QtWidgets.QMainWindow):
         self.tableVelocityConcentrationAddPurgeHLayout = QtWidgets.QHBoxLayout()
         self.tableVelocityConcentrationAddPurgeHLayout.addLayout(self.addPurgeTableVLayout)
         self.tableVelocityConcentrationAddPurgeHLayout.addLayout(self.tableVelocityConcentrationVLayout)        # Main Layout 4
+        self.tableVelocityConcentrationAddPurgeHLayout.setContentsMargins(0,0,300,0)
 
         self.calculationButtonsFrameHLayout = QtWidgets.QHBoxLayout()
         self.calculationButtonsFrameHLayout.addLayout(self.o2ZeroCo2CalGridLayout)
-        self.calculationButtonsFrameHLayout.addLayout(self.co2ConcentrationGridLayout)
-        self.calculationButtonsFrameHLayout.addLayout(self.co2o2GridLayout)
         self.calculationButtonsFrameHLayout.addLayout(self.tableVelocityConcentrationAddPurgeHLayout)
 
         self.calculationButtonsFrame.setLayout(self.calculationButtonsFrameHLayout)
@@ -713,17 +640,11 @@ class LabView(QtWidgets.QMainWindow):
         self.curve2 = Curve("Mass 44", [], pg.mkPen(color="#4363d8", width=4), self.realTimeGraph)
         self.curve2.plotCurve()
 
-        self.curve3 = Curve("Mass 32", [], pg.mkPen(color="#800000", width=4), self.uBarGraph)
+        self.curve3 = Curve("Mass 44", [], pg.mkPen(color="#4363d8", width=4), self.uBarGraph)
         self.curve3.plotCurve()
 
-        self.curve4 = Curve("Mass 44", [], pg.mkPen(color="#4363d8", width=4), self.uBarGraph)
+        self.curve4 = Curve("Mass 44", [], pg.mkPen(color="#4363d8", width=4), self.DuBarGraph)
         self.curve4.plotCurve()
-
-        self.curve5 = Curve("Mass 32", [], pg.mkPen(color="#800000", width=4), self.DuBarGraph)
-        self.curve5.plotCurve()
-
-        self.curve6 = Curve("Mass 44", [], pg.mkPen(color="#4363d8", width=4), self.DuBarGraph)
-        self.curve6.plotCurve()
 
         # Initializing the mean bars.
         self.meanBar = pg.LinearRegionItem(values=(0, 1), orientation='vertical', brush=None, pen=None, hoverBrush=None, hoverPen=None, movable=True, bounds=None, span=(0, 1), swapMode='sort', clipItem=None)
@@ -788,12 +709,6 @@ class LabView(QtWidgets.QMainWindow):
         # CO2 Zero button connect method
         self.co2ZeroButton.clicked.connect(self.co2ZeroButtonPressed)
         self.co2SampleButton.clicked.connect(self.co2SampleButtonPressed)
-
-        # Blank button connect method
-        self.blankButton.clicked.connect(self.blankButtonPressed)
-
-        # Extract button connect method
-        self.extractButton.clicked.connect(self.extractButtonPressed)
 
         # Add to Table connect method
         self.addToTableButton.clicked.connect(self.addToTableButtonPressed)
@@ -869,7 +784,7 @@ class LabView(QtWidgets.QMainWindow):
         
         self.plotAllButtonThread.start()
 
-        self.plotAllThread.newDataPointSignal.connect(self.update_plot_data)
+        self.plotAllThread.newDataPointSignal.connect(self.update_main_plot_data)
         self.plotAllThread.throwOutOfDataExceptionSignal.connect(self.throwOutOfDataException)
         self.plotAllThread.throwFolderNotSelectedExceptionSignal.connect(self.throwFolderNotSelectedException)
         self.plotAllThread.filesParsedSignal.connect(self.startNewFileNotifier)
@@ -922,13 +837,13 @@ class LabView(QtWidgets.QMainWindow):
 
             # Connecting the signals to the methods.
             self.worker.plotEndBitSignal.connect(self.outOfDataCondition)
-            self.worker.newDataPointSignal.connect(self.update_plot_data)
+            self.worker.newDataPointSignal.connect(self.update_main_plot_data)
 
             self.worker2.plotEndBitSignal.connect(self.outOfDataCondition)
-            self.worker2.newDataPointSignal.connect(self.update_plot_data)
+            self.worker2.newDataPointSignal.connect(self.update_ubar_plot_data)
 
             self.worker3.plotEndBitSignal.connect(self.outOfDataCondition)
-            self.worker3.newDataPointSignal.connect(self.update_plot_data)
+            self.worker3.newDataPointSignal.connect(self.update_main_plot_data)
 
             # Deleting the reference of the worker and the thread from the memory to free up space.
             self.worker.finished.connect(self.worker.deleteLater)
@@ -952,8 +867,6 @@ class LabView(QtWidgets.QMainWindow):
             # Unhide graphs
             self.curve3.unhide()
             self.curve4.unhide()
-            self.curve5.unhide()
-            self.curve6.unhide()
 
             # Final resets
             self.startButton.setEnabled(False)
@@ -1084,7 +997,7 @@ class LabView(QtWidgets.QMainWindow):
             if(num == -99999): #num that is returned if num is undefinable
                 self.throwUndefined(self.co2VoltLineEdit)
             else:
-                self.co2VoltLineEdit.setText(str(num))
+                self.co2VoltLineEdit.setText(str(round(num, 10)))
 
 
 
@@ -1112,11 +1025,11 @@ class LabView(QtWidgets.QMainWindow):
         co2Sample = float(self.co2SampleLineEdit.text())
         co2Zero = float(self.co2ZeroLineEdit.text())
         #calculate values
-        percentCO2 = Calculations.calculatePercentCO2(co2Volt, co2Sample, co2Zero)
-        uBar2 = Calculations.calculateUbarCO2(percentCO2)
+        self.percentCO2 = Calculations.calculatePercentCO2(co2Volt, co2Sample, co2Zero)
+        self.uBarCO2 = Calculations.calculateUbarCO2(self.percentCO2)
         #populate fields    
-        self.percentCO2LineEdit2.setText(str(percentCO2))
-        self.uBar2LineEdit.setText(str(uBar2))
+        self.percentCO2LineEdit.setText(str(round(self.percentCO2, 4)))
+        self.uBar2LineEdit.setText(str(round(self.uBarCO2, 4)))
 
 
 
@@ -1168,138 +1081,6 @@ class LabView(QtWidgets.QMainWindow):
             self.throwUndefined(self.o2CalibrationLineEdit)
 
 
-    def blankButtonPressed(self):
-        """
-        Executed when the Blank button is pressed.
-        Finds the slope from Mass 44 and Mass 45 from the points on the mean bars.
-        :param {_ : }
-        :return -> None
-        """
-
-        # Get the left and right x points from the mean bars
-        xleft, xright = self.meanBar.getRegion()
-
-        # if no data exists, return undefined
-        if (not self.sharedData.dataPoints.keys()):
-            self.throwUndefined(self.co2LineEdit1)
-            self.throwUndefined(self.o2LineEdit1)
-            return
-
-        # if one or both of the x values is not in the range of the dataset, return undefined
-        elif (xright < list(self.sharedData.dataPoints.keys())[0] or xleft > list(self.sharedData.dataPoints.keys())[-1] or
-                 xleft < list(self.sharedData.dataPoints.keys())[0] or xright > list(self.sharedData.dataPoints.keys())[-1]):
-            
-            self.throwUndefined(self.co2LineEdit1)
-            self.throwUndefined(self.o2LineEdit1)
-            self.co2Blank = 0
-            self.o2Blank = 0
-            return
-
-        else:
-
-            # Find the closest x values in the data to the x values from the mean bars
-            xleft = min(self.sharedData.dataPoints.keys(), key=lambda x:abs(x-xleft))
-            xright = min(self.sharedData.dataPoints.keys(), key=lambda x:abs(x-xright))
-
-            # Calculate slope between these two points for graph Mass 44
-            self.co2Blank = (self.sharedData.dataPoints[xright][3] - self.sharedData.dataPoints[xleft][3]) / (xright - xleft)
-            
-            # Calculate slope between these two points for graph Mass 32
-            self.o2Blank = (self.sharedData.dataPoints[xright][0] - self.sharedData.dataPoints[xleft][0]) / (xright - xleft)
-
-            # Set CO2 and O2 line edits
-            self.co2LineEdit1.setText(str(round(self.co2Blank, 4)))
-            self.o2LineEdit1.setText(str(round(self.o2Blank, 4)))
-
-
-    def extractButtonPressed(self):
-        """
-        Executed when the Extract button is pressed.
-        Fills in the first line of line edits with the extract values (slope values taken from the mean bars).
-        Second line of line edits are filled with the extract - blank.
-        Third line of line edits filled with mean values from Mass 44 and Mass32 from the mean bars.
-        Lastly calculates and fills in velocities and concentrations.
-        :param {_ : }
-        :return -> None
-        """
-
-        ################ First Line ###############
-
-        # Get the left and right x points from the mean bars
-        xleft, xright = self.meanBar.getRegion()
-
-        # if no data exists, return undefined
-        if (not self.sharedData.dataPoints.keys()):
-            self.throwUndefined(self.co2LineEdit2)
-            self.throwUndefined(self.o2LineEdit2)
-            return
-
-        # if one or both of the x values is not in the range of the dataset, return undefined
-        elif (xright < list(self.sharedData.dataPoints.keys())[0] or xleft > list(self.sharedData.dataPoints.keys())[-1] or
-                 xleft < list(self.sharedData.dataPoints.keys())[0] or xright > list(self.sharedData.dataPoints.keys())[-1]):
-            
-            self.throwUndefined(self.co2LineEdit2)
-            self.throwUndefined(self.o2LineEdit2)
-            return
-
-        # Find the closest x values in the data to the x values from the mean bars
-        xleft = min(self.sharedData.dataPoints.keys(), key=lambda x:abs(x-xleft))
-        xright = min(self.sharedData.dataPoints.keys(), key=lambda x:abs(x-xright))
-
-        # Calculate slope between these two points for graph Mass 44
-        self.co2Extract = (self.sharedData.dataPoints[xright][3] - self.sharedData.dataPoints[xleft][3]) / (xright - xleft)
-        
-        # Calculate slope between these two points for graph Mass 32
-        self.o2Extract = (self.sharedData.dataPoints[xright][0] - self.sharedData.dataPoints[xleft][0]) / (xright - xleft)
-
-        # Set CO2 and O2 line edits
-        self.co2LineEdit2.setText(str(round(self.co2Extract, 4)))
-        self.o2LineEdit2.setText(str(round(self.o2Extract, 4)))
-
-        ################ Secone Line ###############
-        
-        # if Blank has not been found yet, return undefined
-        if (self.co2Blank == 0):
-            self.throwUndefined(self.co2LineEdit3)
-            self.throwUndefined(self.o2LineEdit3)
-            return
-
-        # calculate net rate of consumption for CO2 and O2
-        self.co2ConsumptionRate = self.co2Extract - self.co2Blank
-        self.o2ConsumptionRate = self.o2Extract - self.o2Blank
-
-        # Set Line Edits
-        self.co2LineEdit3.setText(str(round(self.co2ConsumptionRate, 4)))
-        self.o2LineEdit3.setText(str(round(self.o2ConsumptionRate, 4)))
-
-        ################ Third Line ###############
-
-        # Get mean value from mean bars from Mass 44 and Mass 32 graphs
-        co2Reading = self.meanButtonPressed(self.co2LineEdit4, 3)
-        o2Reading = self.meanButtonPressed(self.o2LineEdit4, 0)
-
-        ######### Populate Velocities and Concentrations for Table ########
-
-        # If the o2 calibration or co2 calibration are not defined, return undefined
-        if (self.o2Calibration == 0 or self.co2BufferCalibration == 0 or self.biCarbCo2Ratio == 0):
-            self.throwUndefined(self.percentCO2LineEdit2)
-            self.throwUndefined(self.uBar2LineEdit)
-            self.throwUndefined(self.co2ConcentrationpercentCO2LineEdit2)
-            self.throwUndefined(self.o2ConcentrationpercentCO2LineEdit2)
-            return
-        
-        self.vO = self.o2ConsumptionRate * self.o2Calibration * -1
-        self.vC = self.co2ConsumptionRate * self.co2BufferCalibration * -1
-        self.co2Concentration = (self.co2BufferCalibration * (co2Reading - self.co2Zero44Reading)) / self.biCarbCo2Ratio
-        self.o2Concentration = self.o2Calibration * o2Reading
-
-        # Set Line Edits
-
-        self.percentCO2LineEdit2.setText(str(round(self.vO, 4)))
-        self.uBar2LineEdit.setText(str(round(self.vC, 4)))
-        self.co2ConcentrationpercentCO2LineEdit2.setText(str(round(self.co2Concentration, 4)))
-        self.o2ConcentrationpercentCO2LineEdit2.setText(str(round(self.o2Concentration, 4)))
-
     def addToTableButtonPressed(self):
         """
         Executed when the Add To Table button is pressed.
@@ -1315,11 +1096,9 @@ class LabView(QtWidgets.QMainWindow):
         newRowPosition = self.table.rowCount()
         self.table.insertRow(newRowPosition)
 
-        # set values in row (VO, VC, [CO2], [O2])
-        self.table.setItem(newRowPosition, 0, QtWidgets.QTableWidgetItem(str(round(self.vO, 4))))
-        self.table.setItem(newRowPosition, 1, QtWidgets.QTableWidgetItem(str(round(self.vC, 4))))
-        self.table.setItem(newRowPosition, 2, QtWidgets.QTableWidgetItem(str(round(self.co2Concentration, 4))))
-        self.table.setItem(newRowPosition, 3, QtWidgets.QTableWidgetItem(str(round(self.o2Concentration, 4))))
+        # set values in row (%CO@, uBar CO2)
+        self.table.setItem(newRowPosition, 0, QtWidgets.QTableWidgetItem(str(round(self.percentCO2, 4))))
+        self.table.setItem(newRowPosition, 1, QtWidgets.QTableWidgetItem(str(round(self.uBarCO2, 4))))
             
 
     def purgeTableButtonPressed(self):
@@ -1477,7 +1256,7 @@ class LabView(QtWidgets.QMainWindow):
         else:
             pass
 
-    def update_plot_data(self, dataPoints):
+    def update_main_plot_data(self, dataPoints):
     
            # Updates the real time plot after reading each row of data points from the file ONLY IF the pause bit is False.
            # :param {x_value : Float} -> x point value of the data point.
@@ -1507,7 +1286,6 @@ class LabView(QtWidgets.QMainWindow):
             # print(x_value, y_value)
         # x_value, y_value = self.getNextPoint(self.dataObj)
 
-        # Updating the shared singleton plot data
         
         # Updating all the curves
         # start = time()
@@ -1534,11 +1312,157 @@ class LabView(QtWidgets.QMainWindow):
         self.curve1.updateDataPoints(x, y_value[0])
         self.curve2.updateDataPoints(x, y_value[3])
 
-        self.curve3.updateDataPoints(x, y_value[0])
-        self.curve4.updateDataPoints(x, y_value[3])
+        #self.curve4.updateDataPoints(x, y_value[3])
+        # print("Time taken plot all the points: ", time()-start)
 
-        self.curve5.updateDataPoints(x, y_value[0])
-        self.curve6.updateDataPoints(x, y_value[3])
+    def update_ubar_plot_data(self, dataPoints):
+
+        # Updates the ubar time plot after reading each row of data points from the file ONLY IF the pause bit is False.
+        # :param {x_value : Float} -> x point value of the data point.
+        # :param {y_value : Float} -> list of the y point values of the data point for different plots.
+        # :return -> None
+
+
+        y_value = [[],[],[],[],[],[],[],[]]
+
+        
+
+        # Getting the next data points from the list of all the points emitted by the worker thread.
+        while len(dataPoints) != 0:
+
+            # Popping the first data points
+            dataPoint = dataPoints.pop(0)
+
+            # Getting the x coordinate and list of y coordinates from the tuple
+            x, y = dataPoint
+
+            # Transform to reflect uBar
+            co2Volt = 0
+            co2Zero = 0
+
+            if self.co2VoltLineEdit.text():
+                co2Volt = float(self.co2VoltLineEdit.text())
+
+            if self.co2VoltLineEdit.text():
+                co2Zero = float(self.co2ZeroLineEdit.text())
+
+            print(y)
+            
+            percentCo2 = Calculations.calculatePercentCO2(co2Volt, y[3], co2Zero)
+            uBarCO2 = Calculations.calculateUbarCO2(percentCo2)
+            y[3] = uBarCO2
+            print(y)
+            # Updating the data points in the singleton class.
+            #self.sharedData.dataPoints[x] = y
+
+            # self.stopwatch.set_time(x)
+
+            for i in range(len(y_value)):
+                y_value[i].append(y[i])
+
+            # print(x_value, y_value)
+        # x_value, y_value = self.getNextPoint(self.dataObj)
+
+        
+        # Updating all the curves
+        # start = time()
+        yAllMax = max(y)
+        yAllMin = min(y)
+
+        if self.yAllMin == None and self.yAllMax == None:
+            self.yAllMax = yAllMax
+            self.yAllMin = yAllMin
+            self.isYChanged = True
+            
+        else:
+
+            if yAllMin < self.yAllMin:
+                self.yAllMin = yAllMin
+                self.isYChanged = True
+
+            if yAllMax > self.yAllMax:
+                self.yAllMax = yAllMax
+                self.isYChanged = True
+        
+        self.changeGraphRange(x)
+
+
+        self.curve3.updateDataPoints(x, y_value[3])
+        # print("Time taken plot all the points: ", time()-start)
+
+    def update_Dubar_plot_data(self, dataPoints):
+
+        # Updates the ubar time plot after reading each row of data points from the file ONLY IF the pause bit is False.
+        # :param {x_value : Float} -> x point value of the data point.
+        # :param {y_value : Float} -> list of the y point values of the data point for different plots.
+        # :return -> None
+
+
+        y_value = [[],[],[],[],[],[],[],[]]
+
+        
+
+        # Getting the next data points from the list of all the points emitted by the worker thread.
+        while len(dataPoints) != 0:
+
+            # Popping the first data points
+            dataPoint = dataPoints.pop(0)
+
+            # Getting the x coordinate and list of y coordinates from the tuple
+            x, y = dataPoint
+
+            # Transform data to reflect Dubar
+            co2Volt = 0
+            co2Zero = 0
+
+            if self.co2VoltLineEdit.text():
+                co2Volt = float(self.co2VoltLineEdit.text())
+
+            if self.co2VoltLineEdit.text():
+                co2Zero = float(self.co2ZeroLineEdit.text())
+
+            print(y)
+            
+            percentCo2 = Calculations.calculatePercentCO2(co2Volt, y[3], co2Zero)
+            uBarCO2 = Calculations.calculateUbarCO2(percentCo2)
+            y[3] = uBarCO2
+            print(y)
+            # Updating the data points in the singleton class.
+            #self.sharedData.dataPoints[x] = y
+
+            # self.stopwatch.set_time(x)
+
+            for i in range(len(y_value)):
+                y_value[i].append(y[i])
+
+            # print(x_value, y_value)
+        # x_value, y_value = self.getNextPoint(self.dataObj)
+
+        
+        # Updating all the curves
+        # start = time()
+        yAllMax = max(y)
+        yAllMin = min(y)
+
+        if self.yAllMin == None and self.yAllMax == None:
+            self.yAllMax = yAllMax
+            self.yAllMin = yAllMin
+            self.isYChanged = True
+            
+        else:
+
+            if yAllMin < self.yAllMin:
+                self.yAllMin = yAllMin
+                self.isYChanged = True
+
+            if yAllMax > self.yAllMax:
+                self.yAllMax = yAllMax
+                self.isYChanged = True
+        
+        self.changeGraphRange(x)
+
+
+        self.curve4.updateDataPoints(x, y_value[3])
         # print("Time taken plot all the points: ", time()-start)
 
     def changeGraphRange(self, x):
@@ -2072,8 +1996,8 @@ class LabView(QtWidgets.QMainWindow):
         self.o2ConsumptionRate = 0
 
         # Initialize CO2 and O2 rate of consumption and concentrations
-        self.vC = 0
-        self.vO = 0
+        self.percentCO2 = 0
+        self.uBarCO2 = 0
         self.co2Concentration = 0
         self.o2Concentration = 0
 
@@ -2101,9 +2025,7 @@ class LabView(QtWidgets.QMainWindow):
 
         self.curve1.clear()
         self.curve2.clear()
-
         self.curve3.clear()
-        self.curve4.clear()
      
 
         # Uncheck all the graph boxes.
