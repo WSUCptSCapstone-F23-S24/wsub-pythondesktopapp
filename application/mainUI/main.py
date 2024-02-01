@@ -1424,7 +1424,7 @@ class LabView(QtWidgets.QMainWindow):
         obj.close()
 
 
-    def biCarbCo2ButtonPressed(self):
+    def biCarbCo2ButtonPressed(self, manualEntry=False):
         """
         When the BiCarb/CO2 button is pressed, the ratio of BiCarb to CO2 is calculated and set
         as long as the HCL calibration is not equal to zero
