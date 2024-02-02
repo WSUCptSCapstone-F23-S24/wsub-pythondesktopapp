@@ -163,9 +163,7 @@ class LabView(QtWidgets.QMainWindow):
         self.calculationButtonsUI()
 
         # List of calibration line edits
-        self.calibrationLineEdits = [self.temperatureLineEdit, self.o2ZeroLineEdit,
-                                    self.co2CalZeroLineEdit, self.co2Cal1ulLineEdit, self.co2Cal2ulLineEdit, self.co2Cal3ulLineEdit
-                                    ]
+        self.calibrationLineEdits = [self.co2CalZeroLineEdit, self.co2Cal1ulLineEdit, self.co2Cal2ulLineEdit, self.co2Cal3ulLineEdit, self.co2ZeroLineEdit, self.co2SampleLineEdit]
                                     
 
         # Add curves and Mean bar to the real time plot
@@ -490,7 +488,7 @@ class LabView(QtWidgets.QMainWindow):
         
         
 
-        self.lineEditList.extend([self.o2ZeroLineEdit, self.co2CalZeroLineEdit, self.co2Cal1ulLineEdit, self.co2Cal2ulLineEdit, self.co2Cal3ulLineEdit])
+        self.lineEditList.extend([self.co2CalZeroLineEdit, self.co2Cal1ulLineEdit, self.co2Cal2ulLineEdit, self.co2Cal3ulLineEdit, self.co2ZeroLineEdit, self.co2SampleLineEdit])
 
         # Initializing QLabels
         self.calibrationsBufferLabel = QtWidgets.QLabel("Calibrations")
@@ -1486,9 +1484,7 @@ class LabView(QtWidgets.QMainWindow):
             with open(path, 'w') as csvfile:
                 writer = csv.writer(csvfile, dialect='excel', lineterminator='\n')
                 
-                writer.writerow(['Temp', 'O2 Calibration', 'O2 Buffer Zero', 'BiCarb/CO2',
-                                 'CO2 Cal 0', 'CO2 Cal 6', 'CO2 Cal 12', 'CO2 Cal 18',
-                                 'BiCarb Cal 0', 'BiCarb Cal 2', 'BiCarb Cal 4', 'BiCarb Cal 6'])
+                writer.writerow(['CO2 0µL', 'CO2 1µL', 'CO2 2µL', 'CO2 3µL', 'CO2 Zero', 'CO2 Sample'])
 
                 row = (lineEdit.text() for lineEdit in  self.calibrationLineEdits)
 
