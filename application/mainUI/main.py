@@ -467,16 +467,12 @@ class LabView(QtWidgets.QMainWindow):
         # Initializing line edits
         self.o2ZeroLineEdit = LineEdit()
         self.o2ZeroLineEdit.setReadOnly(False)
-
-        self.co2ZeroLineEdit = LineEdit()
-        self.co2ZeroLineEdit.setReadOnly(False)
-        self.co2SampleLineEdit = LineEdit()
-        self.co2SampleLineEdit.setReadOnly(False)
         
         self.co2CalZeroLineEdit = LineEdit()
         self.co2Cal1ulLineEdit = LineEdit()
         self.co2Cal2ulLineEdit = LineEdit()
         self.co2Cal3ulLineEdit = LineEdit()
+
         self.co2ZeroLineEdit = LineEdit()
         self.co2SampleLineEdit = LineEdit()
         
@@ -487,6 +483,9 @@ class LabView(QtWidgets.QMainWindow):
         self.co2Cal1ulLineEdit.setReadOnly(False)
         self.co2Cal2ulLineEdit.setReadOnly(False)
         self.co2Cal3ulLineEdit.setReadOnly(False)
+
+        self.co2ZeroLineEdit.setReadOnly(False)
+        self.co2SampleLineEdit.setReadOnly(False)
 
         
         
