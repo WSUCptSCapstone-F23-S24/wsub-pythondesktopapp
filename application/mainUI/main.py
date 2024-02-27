@@ -137,13 +137,17 @@ class LabView(QtWidgets.QMainWindow):
 
         self.co2Zero44Reading = 0
         self.co2SampleReading = 0
-        
-        self.o2ZeroReading = 0
-        self.o2SampleReading = 0
 
         self.lastUbar = 0
         
-
+        # Initialize O2 calibration and measurements
+        self.o2Temperature = 0
+        self.o2Air = 0
+        self.o2Calibration = 0
+        
+        self.o2Zero = 0
+        self.o2Measured = 0
+        
         self.keepCals = False
         self.folder_path = ''
 
@@ -166,7 +170,7 @@ class LabView(QtWidgets.QMainWindow):
         self.calculationButtonsUI()
 
         # List of calibration line edits
-        self.calibrationLineEdits = [self.temperatureLineEdit, self.o2ZeroLineEdit, self.o2SampleLineEdit,
+        self.calibrationLineEdits = [self.temperatureLineEdit, self.o2ZeroLineEdit, self.o2TemperatureLineEdit, self.o2CalibrationLineEdit,
                                     self.co2CalZeroLineEdit, self.co2Cal1ulLineEdit, self.co2Cal2ulLineEdit, self.co2Cal3ulLineEdit
                                     ]
                                     
@@ -458,7 +462,6 @@ class LabView(QtWidgets.QMainWindow):
         # Initializing all the buttons
         self.o2CalibrateButton = Button("O2 Cal", 120, 26)
         self.o2ZeroButton = Button("O2 Zero", 120, 26)
-        self.o2SampleButton = Button("O2 Sample", 120, 26)
 
         self.co2ZeroButton = Button("CO2 Zero", 120, 26)
         self.co2SampleButton = Button("CO2 Sample", 120, 26)
@@ -469,9 +472,11 @@ class LabView(QtWidgets.QMainWindow):
         self.co2ZeroButton = Button("CO2 Zero", 120, 26)
         self.co2SampleButton = Button("CO2 Sample", 120, 26)
 
-        # Initializing line edits      
+        # Initializing line edits
+        self.o2TemperatureLabel = QtWidgets.QLabel("Temperature")
+        self.o2TemperatureLineEdit = LineEdit()
+        self.o2CalibrationLineEdit = LineEdit()
         self.o2ZeroLineEdit = LineEdit()
-        self.o2SampleLineEdit = LineEdit()
         
         self.co2CalZeroLineEdit = LineEdit()
         self.co2Cal1ulLineEdit = LineEdit()
@@ -485,7 +490,8 @@ class LabView(QtWidgets.QMainWindow):
 
         # Make line edits editable
         self.o2ZeroLineEdit.setReadOnly(False)
-        self.o2SampleLineEdit.setReadOnly(False)
+        self.o2TemperatureLineEdit.setReadOnly(False)
+        self.o2CalibrationLineEdit.setReadOnly(False)
         
         self.co2CalZeroLineEdit.setReadOnly(False)
         self.co2Cal1ulLineEdit.setReadOnly(False)
@@ -533,19 +539,18 @@ class LabView(QtWidgets.QMainWindow):
         self.co2ZeroCo2CalGridLayout.setRowStretch(8,1)
         self.co2ZeroCo2CalGridLayout.setRowStretch(9,1)
         self.co2ZeroCo2CalGridLayout.setColumnStretch(0,1)
-        self.co2ZeroCo2CalGridLayout.setContentsMargins(2,3,200,0)
+        self.co2ZeroCo2CalGridLayout.setContentsMargins(2,5,125,0)
         
         # Creating a Qgrid Layout for o2
         self.o2GridLayout = QtWidgets.QGridLayout()
-        self.o2GridLayout.addWidget(self.o2CalibrateButton, 1, 1, alignment=QtCore.Qt.AlignCenter)
-        self.o2GridLayout.addWidget(self.o2ZeroButton, 3, 1, alignment=QtCore.Qt.AlignCenter)
-        self.o2GridLayout.addWidget(self.o2ZeroLineEdit, 3, 2, alignment=QtCore.Qt.AlignCenter)
-        self.o2GridLayout.addWidget(self.o2SampleButton, 4, 1, alignment=QtCore.Qt.AlignCenter)
-        self.o2GridLayout.addWidget(self.o2SampleLineEdit, 4, 2, alignment=QtCore.Qt.AlignCenter)
-        self.o2GridLayout.setRowStretch(1,1)
-        self.o2GridLayout.setRowStretch(3,1)
-        self.o2GridLayout.setRowStretch(4,1)
-        self.o2GridLayout.setContentsMargins(2, 20, 100, 50)
+        self.o2GridLayout.addWidget(self.o2ZeroButton, 1, 1, alignment=QtCore.Qt.AlignCenter)
+        self.o2GridLayout.addWidget(self.o2ZeroLineEdit, 1, 2, alignment=QtCore.Qt.AlignCenter)
+        self.o2GridLayout.addWidget(self.o2CalibrateButton, 2, 1, alignment=QtCore.Qt.AlignCenter)
+        self.o2GridLayout.addWidget(self.o2CalibrationLineEdit, 2, 2, alignment=QtCore.Qt.AlignCenter)
+        self.o2GridLayout.addWidget(self.o2TemperatureLabel, 3, 1, alignment=QtCore.Qt.AlignCenter)
+        self.o2GridLayout.addWidget(self.o2TemperatureLineEdit, 3, 2, alignment=QtCore.Qt.AlignCenter)
+        self.o2GridLayout.setContentsMargins(125, 5, 125, 0)
+        
         
         #################################################################################################
 
@@ -566,14 +571,20 @@ class LabView(QtWidgets.QMainWindow):
         #Velocity and CO2 O2 Concentration Text Edit
         self.percentCO2LineEdit = LineEdit()
         self.uBar2LineEdit = LineEdit()
+        
+        # O2 concentration
+        self.uBarO2Label = QtWidgets.QLabel("µBar O2")
+        self.uBarO2LineEdit = LineEdit()
 
         self.lineEditList.extend([self.percentCO2LineEdit, self.uBar2LineEdit])
 
         self.velocityConcentrationGridLayout = QtWidgets.QGridLayout()
         self.velocityConcentrationGridLayout.addWidget(self.percentCO2Label, 1, 1, alignment=QtCore.Qt.AlignCenter)
         self.velocityConcentrationGridLayout.addWidget(self.uBar2Label, 1, 2, alignment=QtCore.Qt.AlignCenter)
+        self.velocityConcentrationGridLayout.addWidget(self.uBarO2Label, 1, 3, alignment=QtCore.Qt.AlignCenter)
         self.velocityConcentrationGridLayout.addWidget(self.percentCO2LineEdit, 2, 1, alignment=QtCore.Qt.AlignCenter)
         self.velocityConcentrationGridLayout.addWidget(self.uBar2LineEdit, 2, 2, alignment=QtCore.Qt.AlignCenter)
+        self.velocityConcentrationGridLayout.addWidget(self.uBarO2LineEdit, 2, 3, alignment=QtCore.Qt.AlignCenter)
 
         
 
@@ -596,8 +607,8 @@ class LabView(QtWidgets.QMainWindow):
         # Dummy row count
         #self.table.setRowCount(4)
         # set column count
-        self.table.setColumnCount(2)
-        self.table.setMaximumWidth(220)
+        self.table.setColumnCount(3)
+        self.table.setMaximumWidth(330)
         
 
         self.tableVLayout = QtWidgets.QVBoxLayout()
@@ -613,7 +624,7 @@ class LabView(QtWidgets.QMainWindow):
         self.tableVelocityConcentrationAddPurgeHLayout = QtWidgets.QHBoxLayout()
         self.tableVelocityConcentrationAddPurgeHLayout.addLayout(self.addPurgeTableVLayout)
         self.tableVelocityConcentrationAddPurgeHLayout.addLayout(self.tableVelocityConcentrationVLayout)        # Main Layout 4
-        self.tableVelocityConcentrationAddPurgeHLayout.setContentsMargins(0,0,300,0)
+        self.tableVelocityConcentrationAddPurgeHLayout.setContentsMargins(125,0,50,0)
 
         self.calculationButtonsFrameHLayout = QtWidgets.QHBoxLayout()
         self.calculationButtonsFrameHLayout.addLayout(self.co2ZeroCo2CalGridLayout)
@@ -730,16 +741,14 @@ class LabView(QtWidgets.QMainWindow):
         self.co2Cal2ulLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.co2Cal2ulLineEdit, 3, 0, 2))
         self.co2Cal3ulLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.co2Cal3ulLineEdit, 3, 0, 3))
         
+        # O2 cal buttons connect method
+        
 
         #self.o2CalibrationLineEdit.returnPressed.connect(lambda: self.OnEditedO2Cal())
 
         # CO2 Zero button connect method
         self.co2ZeroButton.clicked.connect(self.co2ZeroButtonPressed)
         self.co2SampleButton.clicked.connect(self.co2SampleButtonPressed)
-        
-        # o2 buttons connect method
-        self.o2ZeroButton.clicked.connect(self.o2ZeroButtonPressed)
-        self.o2SampleButton.clicked.connect(self.o2SampleButtonPressed)
 
         # Add to Table connect method
         self.addToTableButton.clicked.connect(self.addToTableButtonPressed)
@@ -1066,22 +1075,8 @@ class LabView(QtWidgets.QMainWindow):
             self.o2ZeroReading = float(self.o2ZeroLineEdit.text())
         else:
             # Set mean value from mean bars on the Mass 32 graph
-            self.o2ZeroReading = self.meanButtonPressed(self.o2ZeroLineEdit, 0)
+            self.o2ZeroReading = self.meanButtonPressed(self.o2ZeroLineEdit, 1)
             
-            
-    def o2SampleButtonPressed(self, manualEntry=False):
-        """
-        Gets the mean of Mass 32 from the mean bars and sets the o2 sample value
-        to the mean. Updates the o2 sample display accordingly.
-        """
-        
-        if (manualEntry):
-            # use entered value as mean
-            self.o2SampleReading = float(self.o2SampleLineEdit.text())
-        else:
-            # obtain o2 sample from graph
-            self.o2SampleReading = self.meanButtonPressed(self.o2SampleLineEdit, 1)
-
 
     def addToTableButtonPressed(self):
         """
