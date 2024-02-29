@@ -721,7 +721,7 @@ class LabView(QtWidgets.QMainWindow):
         
 
         # O2 Assay Buffer Zero Button connect method
-        self.o2ZeroButton.clicked.connect(lambda: self.o2ZeroButtonPressed())
+        # self.o2ZeroButton.clicked.connect(lambda: self.o2ZeroButtonPressed())
 
         # O2 Assay Buffer Zero LineEdit text edited connect method
         self.o2ZeroLineEdit.returnPressed.connect(lambda: self.OnEditedO2AssayCal())
@@ -742,7 +742,9 @@ class LabView(QtWidgets.QMainWindow):
         self.co2Cal3ulLineEdit.returnPressed.connect(lambda: self.OnEditedCO2Cal(self.co2Cal3ulLineEdit, 3, 0, 3))
         
         # O2 cal buttons connect method
-        
+        self.o2TemperatureLineEdit.returnPressed.connect(self.temperatureTextChanged)
+        self.o2ZeroButton.clicked.connect(self.o2ZeroButtonPressed)
+        self.o2CalibrateButton.clicked.connect(self.o2CalButtonPressed)
 
         #self.o2CalibrationLineEdit.returnPressed.connect(lambda: self.OnEditedO2Cal())
 
@@ -1064,18 +1066,47 @@ class LabView(QtWidgets.QMainWindow):
             return False
                                  
 
-    def o2ZeroButtonPressed(self, manualEntry=False):
+    def o2ZeroButtonPressed(self):
         """
-        Gets the mean of Mass 32 from the mean bars and sets the o2 sample value
+        Gets the mean of Mass 32 from the mean bars and sets the o2 zero value
         to the mean. Updates the o2 zero display accordingly.
         """
-
-        if (manualEntry):
-            # use entered value as mean value
-            self.o2ZeroReading = float(self.o2ZeroLineEdit.text())
-        else:
-            # Set mean value from mean bars on the Mass 32 graph
-            self.o2ZeroReading = self.meanButtonPressed(self.o2ZeroLineEdit, 1)
+        # Set mean value from mean bars on the Mass 32 graph
+        self.meanButtonPressed(self.o2ZeroLineEdit, self.curve1)
+        self.o2Zero = self.o2ZeroLineEdit.text()
+            
+            
+    def temperatureTextChanged(self):
+        """
+        Reads the temperature value from the lineEdit and sets the temperature
+        setting to that value.
+        """
+        
+        try:
+            # set temperature to text value
+            self.o2Temperature = float(self.o2TemperatureLineEdit.text())
+        except:
+            # set temperature to default
+            self.o2TemperatureLineEdit.setText(0)
+            self.o2Temperature = 0
+            
+            
+    def o2CalButtonPressed(self):
+        """
+        Calculates O2 calibration using temperature setting and O2 zero.
+        The mean of Mass 32 is obtained for the calibration.
+        """
+        
+        # set calibration lineEdit to intermediate value
+        self.meanButtonPressed(self.o2CalibrationLineEdit, self.curve1)
+        self.o2Measured = self.o2CalibrationLineEdit.text()
+        
+        # calculate O2 air value given the temperature
+        self.o2Air = Calculations.Calculations.calculateO2Air(self.temperature)
+        
+        # O2 calibration calculation
+        self.o2Calibration = Calculations.Calculations.calculateO2Cal(self.o2Air, self.o2Zero, self.o2Measured)
+        self.o2CalibrationLineEdit.setText(self.o2Calibration)
             
 
     def addToTableButtonPressed(self):

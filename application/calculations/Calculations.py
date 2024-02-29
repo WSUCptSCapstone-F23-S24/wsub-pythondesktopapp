@@ -125,7 +125,7 @@ class Calculations:
     
     
     @staticmethod
-    def calculateO2Calibration(o2Air, o2Standard, o2Measured):
+    def calculateO2Cal(o2Air, o2Standard, o2Measured):
         """
         Calculates and returns the O2 calibration value from the given O2 air value and
         O2 standard and measured values.
