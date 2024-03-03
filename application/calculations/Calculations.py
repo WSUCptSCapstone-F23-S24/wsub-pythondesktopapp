@@ -112,7 +112,28 @@ class Calculations:
         
         ubarCO2 = percentCO2 * 9200
         return ubarCO2
-
+    
+    
+    @staticmethod
+    def calculateO2Air(temperature):
+        """
+        Calculates and returns O2 air value using the given temperature in degrees C.
+        """
+        
+        result = 0.0018 * pow(temperature, 3) + 0.2229 * pow(temperature, 2) - 12.387 * temperature + 456.49
+        return result
+    
+    
+    @staticmethod
+    def calculateO2Cal(o2Air, o2Standard, o2Measured):
+        """
+        Calculates and returns the O2 calibration value from the given O2 air value and
+        O2 standard and measured values.
+        """
+        
+        result = o2Air / o2Standard
+        result = result * o2Measured
+        return result
 
     
     def calculateIntercept(dataPoints, slope):
