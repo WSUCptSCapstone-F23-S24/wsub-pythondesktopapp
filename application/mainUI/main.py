@@ -1097,15 +1097,11 @@ class LabView(QtWidgets.QMainWindow):
         The mean of Mass 32 is obtained for the calibration.
         """
         
-        # set calibration lineEdit to intermediate value
-        self.meanButtonPressed(self.o2CalibrationLineEdit, self.curve1)
-        self.o2Measured = self.o2CalibrationLineEdit.text()
-        
         # calculate O2 air value given the temperature
         self.o2Air = Calculations.Calculations.calculateO2Air(self.temperature)
         
         # O2 calibration calculation
-        self.o2Calibration = Calculations.Calculations.calculateO2Cal(self.o2Air, self.o2Zero, self.o2Measured)
+        self.o2Calibration = Calculations.Calculations.calculateO2Cal(self.o2Air, self.o2Zero)
         self.o2CalibrationLineEdit.setText(self.o2Calibration)
             
 

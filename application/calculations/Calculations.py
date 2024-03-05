@@ -125,14 +125,24 @@ class Calculations:
     
     
     @staticmethod
-    def calculateO2Cal(o2Air, o2Standard, o2Measured):
+    def calculateO2Cal(o2Air, o2Zero):
         """
         Calculates and returns the O2 calibration value from the given O2 air value and
         O2 standard and measured values.
         """
         
-        result = o2Air / o2Standard
-        result = result * o2Measured
+        result = o2Air / o2Zero
+        return result
+    
+    
+    @staticmethod
+    def calculateUbarO2(o2Cal, o2Measured):
+        """
+        Calculates and returns µBar O2 concentration given a previously calculated O2
+        calibration and a new Mass 32 measurement.
+        """
+        
+        result = o2Cal * o2Measured
         return result
 
     
