@@ -751,6 +751,7 @@ class LabView(QtWidgets.QMainWindow):
         self.o2TemperatureLineEdit.returnPressed.connect(self.temperatureTextChanged)
         self.o2ZeroButton.clicked.connect(self.o2ZeroButtonPressed)
         self.o2CalibrateButton.clicked.connect(self.o2CalButtonPressed)
+        self.o2CalculateButton.clicked.connect(self.o2CalculateButtonPressed)
 
         #self.o2CalibrationLineEdit.returnPressed.connect(lambda: self.OnEditedO2Cal())
 
