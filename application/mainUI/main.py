@@ -147,6 +147,7 @@ class LabView(QtWidgets.QMainWindow):
         
         self.o2Zero = 0
         self.o2Measured = 0
+        self.uBarO2
         
         self.keepCals = False
         self.folder_path = ''
@@ -171,7 +172,8 @@ class LabView(QtWidgets.QMainWindow):
 
         # List of calibration line edits
         self.calibrationLineEdits = [self.temperatureLineEdit, self.o2ZeroLineEdit, self.o2TemperatureLineEdit, self.o2CalibrationLineEdit,
-                                    self.co2CalZeroLineEdit, self.co2Cal1ulLineEdit, self.co2Cal2ulLineEdit, self.co2Cal3ulLineEdit
+                                     self.o2AverageLineEdit, self.co2CalZeroLineEdit, self.co2Cal1ulLineEdit, self.co2Cal2ulLineEdit,
+                                     self.co2Cal3ulLineEdit
                                     ]
                                     
 
@@ -462,6 +464,7 @@ class LabView(QtWidgets.QMainWindow):
         # Initializing all the buttons
         self.o2CalibrateButton = Button("O2 Cal", 120, 26)
         self.o2ZeroButton = Button("O2 Zero", 120, 26)
+        self.o2CalculateButton = Button("Calculate", 120, 26)
 
         self.co2ZeroButton = Button("CO2 Zero", 120, 26)
         self.co2SampleButton = Button("CO2 Sample", 120, 26)
@@ -477,6 +480,7 @@ class LabView(QtWidgets.QMainWindow):
         self.o2TemperatureLineEdit = LineEdit()
         self.o2CalibrationLineEdit = LineEdit()
         self.o2ZeroLineEdit = LineEdit()
+        self.o2AverageLineEdit = LineEdit()
         
         self.co2CalZeroLineEdit = LineEdit()
         self.co2Cal1ulLineEdit = LineEdit()
@@ -547,8 +551,10 @@ class LabView(QtWidgets.QMainWindow):
         self.o2GridLayout.addWidget(self.o2ZeroLineEdit, 1, 2, alignment=QtCore.Qt.AlignCenter)
         self.o2GridLayout.addWidget(self.o2CalibrateButton, 2, 1, alignment=QtCore.Qt.AlignCenter)
         self.o2GridLayout.addWidget(self.o2CalibrationLineEdit, 2, 2, alignment=QtCore.Qt.AlignCenter)
-        self.o2GridLayout.addWidget(self.o2TemperatureLabel, 3, 1, alignment=QtCore.Qt.AlignCenter)
-        self.o2GridLayout.addWidget(self.o2TemperatureLineEdit, 3, 2, alignment=QtCore.Qt.AlignCenter)
+        self.o2GridLayout.addWidget(self.o2CalculateButton, 3, 1, alignment=QtCore.Qt.AlignCenter)
+        self.o2GridLayout.addWidget(self.o2AverageLineEdit, 3, 2, alignment=QtCore.Qt.AlignCenter)
+        self.o2GridLayout.addWidget(self.o2TemperatureLabel, 4, 1, alignment=QtCore.Qt.AlignCenter)
+        self.o2GridLayout.addWidget(self.o2TemperatureLineEdit, 4, 2, alignment=QtCore.Qt.AlignCenter)
         self.o2GridLayout.setContentsMargins(125, 5, 125, 0)
         
         
@@ -1094,7 +1100,6 @@ class LabView(QtWidgets.QMainWindow):
     def o2CalButtonPressed(self):
         """
         Calculates O2 calibration using temperature setting and O2 zero.
-        The mean of Mass 32 is obtained for the calibration.
         """
         
         # calculate O2 air value given the temperature
@@ -1103,6 +1108,20 @@ class LabView(QtWidgets.QMainWindow):
         # O2 calibration calculation
         self.o2Calibration = Calculations.Calculations.calculateO2Cal(self.o2Air, self.o2Zero)
         self.o2CalibrationLineEdit.setText(self.o2Calibration)
+        
+        
+    def o2CalculateButtonPressed(self):
+        """
+        Collects the avrage O2 mv from main plot, then calculates O2 concentrarion .
+        """
+        
+        # obtain avrage of mass 32 to be used in the calculation
+        self.meanButtonPressed(self.o2AverageLineEdit, self.curve1)
+        self.o2Measured = float(self.o2AverageLineEdit.text())
+        
+        # calculate uBar O2 concentration
+        self.uBarO2 = Calculations.Calculations.calculateUbarO2(self.o2Calibration, self.o2Measured)
+        self.uBarO2LineEdit.setText(self.uBarO2)
             
 
     def addToTableButtonPressed(self):
