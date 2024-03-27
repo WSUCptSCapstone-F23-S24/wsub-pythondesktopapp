@@ -24,11 +24,9 @@ class File:
 
 
     def __openFile(self):
-        
-        d = pd.read_csv(self.fileName, header=None)
-        print("printing opened file")
-        print(d)
-        return d
+
+        return pd.read_csv(self.fileName, header=None)
+
 
     def __iter__(self):
         pass
@@ -44,6 +42,5 @@ class File:
 
             y_mean_data = list(self.data.astype('float64').mean(axis=0))
             y_mean_data.pop(0)
-            
-            print(x, y_mean_data)
+
             return x,y_mean_data

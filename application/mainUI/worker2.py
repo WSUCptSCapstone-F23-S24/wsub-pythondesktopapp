@@ -100,9 +100,9 @@ class Worker(QObject):
             # print((self.lastDataPoint[0]*1000 + self.globalObject.delay), (stopwatch_time + self.anchorTime))
 
             while (self.lastDataPoint[0]*1000 + self.globalObject.delay) <= (stopwatch_time + self.anchorTime):
-                print("times?", self.lastDataPoint[0]*1000 + self.globalObject.delay, self.globalObject.stopwatch.get_elapsed_time() + self.anchorTime)
+                # print(self.lastDataPoint[0]*1000 + self.globalObject.delay, self.globalObject.stopwatch.get_elapsed_time() + self.anchorTime)
                 dataPoint = self.globalObject.dataObj.__next__()
-                print("datapoint:", dataPoint)
+                # print(dataPoint)
 
                 if self.isDataPointValid(dataPoint):
                     dataPoints.append(self.lastDataPoint) 
