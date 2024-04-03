@@ -147,7 +147,7 @@ class LabView(QtWidgets.QMainWindow):
         
         self.o2Zero = 0
         self.o2Measured = 0
-        self.uBarO2
+        self.uBarO2 = 0
         
         self.keepCals = False
         self.folder_path = ''
