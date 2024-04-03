@@ -366,7 +366,7 @@ class LabView(QtWidgets.QMainWindow):
 
         # Widgets to be added in the layout
         self.uBarGraphLabel = QtWidgets.QLabel("Atom49%")
-        self.DuBarGraphLabel = QtWidgets.QLabel("Atom49% rate of change")
+        self.DuBarGraphLabel = QtWidgets.QLabel("Derivative")
 
         self.uBarBoxGridLayout = QtWidgets.QGridLayout()
         self.uBarBoxGridLayout.addWidget(self.emptyLabel, 1, 1, alignment=QtCore.Qt.AlignCenter)
@@ -413,7 +413,7 @@ class LabView(QtWidgets.QMainWindow):
 
         ######################## {QFormLayout for DuBar} AND {DuBar Graph} #######################
         self.DuBarGraph = Graph(100,180)
-        self.DuBarGraph.setLabel(axis='left', text = 'D[atom49%]')
+        self.DuBarGraph.setLabel(axis='left', text = 'D[uBar]')
         self.DuBarGraph.setLabel(axis='bottom', text = 'Time (s)')
         #self.DuBarGraph.getViewBox().wheelEvent = self.on_wheel_event
         self.DuBarGraphVLayout = QtWidgets.QVBoxLayout()
@@ -690,7 +690,7 @@ class LabView(QtWidgets.QMainWindow):
         self.curve3 = Curve("atom49%", [], pg.mkPen(color="#FFFFFF", width=4), self.uBarGraph)
         self.curve3.plotCurve()
 
-        self.curve4 = Curve("D[atom49%]", [], pg.mkPen(color="#FFFFFF", width=4), self.DuBarGraph)
+        self.curve4 = Curve("D[uBar]", [], pg.mkPen(color="#FFFFFF", width=4), self.DuBarGraph)
         self.curve4.plotCurve()
 
         # Initializing the mean bars.
@@ -1310,8 +1310,7 @@ class LabView(QtWidgets.QMainWindow):
         ubar_y_value = []
         dubar_y_value = []
         a49percent_y = [] #run y values through atom percent calculator, return transformed value to plot on atom49% graph
-        da49percent_y = [] #calculate rate of change of a49percent and then plot
-        last_a49 = 0
+    
         # Getting the next data points from the list of all the points emitted by the worker thread.
         while len(dataPoints) != 0:
 
@@ -1335,12 +1334,8 @@ class LabView(QtWidgets.QMainWindow):
             # y_value - list of list - length 8[8]
             
             #transform y value to atom49% y value
-            current_a49 = Calculations.calculateAtom49(y)
-            a49percent_y.append(current_a49)
+            a49percent_y.append(Calculations.calculateAtom49(y))
 
-
-            da49percent_y.append(last_a49 - current_a49) #plot the change in a49percent
-            last_a49 = current_a49
             # print(x_value, y_value)
             # x_value, y_value = self.getNextPoint(self.dataObj)
 
@@ -1356,16 +1351,16 @@ class LabView(QtWidgets.QMainWindow):
             if self.co2ZeroLineEdit.text():
                 co2Zero = float(self.co2ZeroLineEdit.text())
             
-            #print("Percent CO2 params:", co2Volt, y[3], co2Zero)
+            print("Percent CO2 params:", co2Volt, y[3], co2Zero)
             
             percentCo2 = Calculations.calculatePercentCO2(co2Volt, y[3], co2Zero)
             uBarCO2 = Calculations.calculateUbarCO2(percentCo2)
-            #print("UbarCO2: ", uBarCO2)
+            print("UbarCO2: ", uBarCO2)
             temp_y[3] = uBarCO2
-            #print(y[3])
-            #print(temp_y[3])
+            print(y[3])
+            print(temp_y[3])
             ubar_y_value.append(temp_y[3])
-            #print("ubar len: ",len(ubar_y_value))
+            print("ubar len: ",len(ubar_y_value))
 
 
             #for i in range(len(ubar_y_value)):
@@ -1398,7 +1393,7 @@ class LabView(QtWidgets.QMainWindow):
         self.curve1.updateDataPoints(x, y_value[4])
         self.curve2.updateDataPoints(x, y_value[6])
         self.curve3.updateDataPoints(x, a49percent_y) #replace 2nd graph with atom%49 
-        self.curve4.updateDataPoints(x, da49percent_y) #replace next graph with rate of change of atom%49
+        self.curve4.updateDataPoints(x, dubar_y_value) 
         self.curve5.updateDataPoints(x, y_value[7])
 
         
