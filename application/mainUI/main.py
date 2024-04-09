@@ -496,6 +496,7 @@ class LabView(QtWidgets.QMainWindow):
         self.o2ZeroLineEdit.setReadOnly(False)
         self.o2TemperatureLineEdit.setReadOnly(False)
         self.o2CalibrationLineEdit.setReadOnly(False)
+        self.o2AverageLineEdit.setReadOnly(False)
         
         self.co2CalZeroLineEdit.setReadOnly(False)
         self.co2Cal1ulLineEdit.setReadOnly(False)
@@ -730,7 +731,7 @@ class LabView(QtWidgets.QMainWindow):
         # self.o2ZeroButton.clicked.connect(lambda: self.o2ZeroButtonPressed())
 
         # O2 Assay Buffer Zero LineEdit text edited connect method
-        self.o2ZeroLineEdit.returnPressed.connect(lambda: self.OnEditedO2AssayCal())
+        #self.o2ZeroLineEdit.returnPressed.connect(lambda: self.OnEditedO2AssayCal())
 
         # Temperature Lineedir text edited connect method
         self.temperatureLineEdit.returnPressed.connect(lambda: self.OnEditedTemp())
@@ -749,6 +750,9 @@ class LabView(QtWidgets.QMainWindow):
         
         # O2 cal buttons connect method
         self.o2TemperatureLineEdit.returnPressed.connect(self.temperatureTextChanged)
+        self.o2ZeroLineEdit.returnPressed.connect(self.o2ZeroTextChanged)
+        self.o2AverageLineEdit.returnPressed.connect(self.o2AverageTextChanged)
+        
         self.o2ZeroButton.clicked.connect(self.o2ZeroButtonPressed)
         self.o2CalibrateButton.clicked.connect(self.o2CalButtonPressed)
         self.o2CalculateButton.clicked.connect(self.o2CalculateButtonPressed)
@@ -1081,6 +1085,20 @@ class LabView(QtWidgets.QMainWindow):
         # Set mean value from mean bars on the Mass 32 graph
         self.meanButtonPressed(self.o2ZeroLineEdit, self.curve1)
         self.o2Zero = self.o2ZeroLineEdit.text()
+        
+        
+    def o2ZeroTextChanged(self):
+        """
+        Set o2 zero value directly from the line edit.
+        """
+        
+        try:
+            # set to text value
+            self.o2Zero = float(self.o2ZeroLineEdit.text())
+        except:
+            # set to default value
+            self.o2ZeroLineEdit.setText("0")
+            self.o2Zero = 0
             
             
     def temperatureTextChanged(self):
@@ -1094,8 +1112,10 @@ class LabView(QtWidgets.QMainWindow):
             self.o2Temperature = float(self.o2TemperatureLineEdit.text())
         except:
             # set temperature to default
-            self.o2TemperatureLineEdit.setText(0)
+            self.o2TemperatureLineEdit.setText("0")
             self.o2Temperature = 0
+            
+        #print(self.o2Temperature)
             
             
     def o2CalButtonPressed(self):
@@ -1104,11 +1124,11 @@ class LabView(QtWidgets.QMainWindow):
         """
         
         # calculate O2 air value given the temperature
-        self.o2Air = Calculations.Calculations.calculateO2Air(self.temperature)
+        self.o2Air = Calculations.calculateO2Air(self.temperature)
         
         # O2 calibration calculation
-        self.o2Calibration = Calculations.Calculations.calculateO2Cal(self.o2Air, self.o2Zero)
-        self.o2CalibrationLineEdit.setText(self.o2Calibration)
+        self.o2Calibration = Calculations.calculateO2Cal(self.o2Air, self.o2Zero)
+        self.o2CalibrationLineEdit.setText(str(self.o2Calibration))
         
         
     def o2CalculateButtonPressed(self):
@@ -1121,8 +1141,26 @@ class LabView(QtWidgets.QMainWindow):
         self.o2Measured = float(self.o2AverageLineEdit.text())
         
         # calculate uBar O2 concentration
-        self.uBarO2 = Calculations.Calculations.calculateUbarO2(self.o2Calibration, self.o2Measured)
-        self.uBarO2LineEdit.setText(self.uBarO2)
+        self.uBarO2 = Calculations.calculateUbarO2(self.o2Calibration, self.o2Measured)
+        self.uBarO2LineEdit.setText(str(self.uBarO2))
+        
+        
+    def o2AverageTextChanged(self):
+        """
+        After manual setting of mass 32 average, calculate O2 concentration.
+        """
+        
+        try:
+            # set to text value
+            self.o2Measured = float(self.o2AverageLineEdit.text())
+        except:
+            # set to default value
+            self.o2AverageLineEdit.setText("0")
+            self.o2Measured = 0
+            
+        # calculate uBar O2 concentration
+        self.uBarO2 = Calculations.calculateUbarO2(self.o2Calibration, self.o2Measured)
+        self.uBarO2LineEdit.setText(str(self.uBarO2))
             
 
     def addToTableButtonPressed(self):
