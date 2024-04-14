@@ -478,6 +478,7 @@ class LabView(QtWidgets.QMainWindow):
         # Initializing line edits
         self.o2TemperatureLabel = QtWidgets.QLabel("Temperature")
         self.o2TemperatureLineEdit = LineEdit()
+        self.o2TemperatureLineEdit.setText("0")
         self.o2CalibrationLineEdit = LineEdit()
         self.o2ZeroLineEdit = LineEdit()
         self.o2AverageLineEdit = LineEdit()
@@ -1083,8 +1084,8 @@ class LabView(QtWidgets.QMainWindow):
         to the mean. Updates the o2 zero display accordingly.
         """
         # Set mean value from mean bars on the Mass 32 graph
-        self.meanButtonPressed(self.o2ZeroLineEdit, self.curve1)
-        self.o2Zero = self.o2ZeroLineEdit.text()
+        self.meanButtonPressed(self.o2ZeroLineEdit, 1)
+        self.o2Zero = float(self.o2ZeroLineEdit.text())
         
         
     def o2ZeroTextChanged(self):
@@ -1137,7 +1138,7 @@ class LabView(QtWidgets.QMainWindow):
         """
         
         # obtain avrage of mass 32 to be used in the calculation
-        self.meanButtonPressed(self.o2AverageLineEdit, self.curve1)
+        self.meanButtonPressed(self.o2AverageLineEdit, 1)
         self.o2Measured = float(self.o2AverageLineEdit.text())
         
         # calculate uBar O2 concentration
