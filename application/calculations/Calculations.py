@@ -120,7 +120,7 @@ class Calculations:
         Calculates and returns O2 air value using the given temperature in degrees C.
         """
         
-        result = 0.0018 * pow(temperature, 3) + 0.2229 * pow(temperature, 2) - 12.387 * temperature + 456.49
+        result = -0.0018 * pow(temperature, 3) + 0.2229 * pow(temperature, 2) - 12.387 * temperature + 456.49
         return result
     
     

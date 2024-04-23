@@ -1125,11 +1125,12 @@ class LabView(QtWidgets.QMainWindow):
         """
         
         # calculate O2 air value given the temperature
-        self.o2Air = Calculations.calculateO2Air(self.temperature)
+        self.o2Air = Calculations.calculateO2Air(self.o2Temperature)
+        print(self.o2Air)
         
         # O2 calibration calculation
         self.o2Calibration = Calculations.calculateO2Cal(self.o2Air, self.o2Zero)
-        self.o2CalibrationLineEdit.setText(str(self.o2Calibration))
+        self.o2CalibrationLineEdit.setText(str(round(self.o2Calibration, 4)))
         
         
     def o2CalculateButtonPressed(self):
@@ -1143,7 +1144,7 @@ class LabView(QtWidgets.QMainWindow):
         
         # calculate uBar O2 concentration
         self.uBarO2 = Calculations.calculateUbarO2(self.o2Calibration, self.o2Measured)
-        self.uBarO2LineEdit.setText(str(self.uBarO2))
+        self.uBarO2LineEdit.setText(str(round(self.uBarO2, 4)))
         
         
     def o2AverageTextChanged(self):
@@ -1161,7 +1162,7 @@ class LabView(QtWidgets.QMainWindow):
             
         # calculate uBar O2 concentration
         self.uBarO2 = Calculations.calculateUbarO2(self.o2Calibration, self.o2Measured)
-        self.uBarO2LineEdit.setText(str(self.uBarO2))
+        self.uBarO2LineEdit.setText(str(round(self.uBarO2, 4)))
             
 
     def addToTableButtonPressed(self):
