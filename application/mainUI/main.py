@@ -112,7 +112,7 @@ class LabView(QtWidgets.QMainWindow):
         self.o2VelocityConcentrationData = {}
         self.co2VelocityConcentrationData = {}
 
-        # Initialize O2 and CO2 Calibrations
+        """# Initialize O2 and CO2 Calibrations
         self.temperature = 0
         self.o2Calibration = 0
         self.co2BufferCalibration = 0
@@ -146,8 +146,7 @@ class LabView(QtWidgets.QMainWindow):
         self.o2Calibration = 0
         
         self.o2Zero = 0
-        self.o2Measured = 0
-        
+        self.o2Measured = 0 """ 
         self.keepCals = False
         self.folder_path = ''
 
@@ -170,10 +169,9 @@ class LabView(QtWidgets.QMainWindow):
         self.calculationButtonsUI()
 
         # List of calibration line edits
-        self.calibrationLineEdits = [self.temperatureLineEdit, self.o2ZeroLineEdit, self.o2TemperatureLineEdit, self.o2CalibrationLineEdit,
-                                    self.co2CalZeroLineEdit, self.co2Cal1ulLineEdit, self.co2Cal2ulLineEdit, self.co2Cal3ulLineEdit]
+        self.calibrationLineEdits = []
 
-        self.calibrationLineEdits = [self.co2CalZeroLineEdit, self.co2Cal1ulLineEdit, self.co2Cal2ulLineEdit, self.co2Cal3ulLineEdit, self.co2ZeroLineEdit, self.co2SampleLineEdit]
+        #self.calibrationLineEdits = [self.co2CalZeroLineEdit, self.co2Cal1ulLineEdit, self.co2Cal2ulLineEdit, self.co2Cal3ulLineEdit, self.co2ZeroLineEdit, self.co2SampleLineEdit]
 
                                     
 
@@ -341,7 +339,7 @@ class LabView(QtWidgets.QMainWindow):
 
         ###################################### QFormLayout for Assay Buffer #####################################
 
-        # Widgets to be added in the layout
+        """# Widgets to be added in the layout
         self.intercept1Label = QtWidgets.QLabel("Intercept")
         self.co2VoltLabel = QtWidgets.QLabel("CO2/volt")
         self.assayBufferLabel = QtWidgets.QLabel("CO2 Calibrations")
@@ -359,7 +357,7 @@ class LabView(QtWidgets.QMainWindow):
         self.assayBufferBoxGridLayout.addWidget(self.assayBufferLabel, 2, 1, alignment=QtCore.Qt.AlignCenter)
         self.assayBufferBoxGridLayout.addWidget(self.intercept1LineEdit, 2, 2, alignment=QtCore.Qt.AlignCenter)
         self.assayBufferBoxGridLayout.addWidget(self.co2VoltLineEdit, 2, 3, alignment=QtCore.Qt.AlignCenter)
-        self.assayBufferBoxGridLayout.setHorizontalSpacing(10)
+        self.assayBufferBoxGridLayout.setHorizontalSpacing(10)"""
         ###############################################################################################
 
         ###################################### QFormLayout for uBar and DuBar #####################################
@@ -369,11 +367,11 @@ class LabView(QtWidgets.QMainWindow):
         self.DuBarGraphLabel = QtWidgets.QLabel("Atom49% rate of change")
 
         self.uBarBoxGridLayout = QtWidgets.QGridLayout()
-        self.uBarBoxGridLayout.addWidget(self.emptyLabel, 1, 1, alignment=QtCore.Qt.AlignCenter)
+        #self.uBarBoxGridLayout.addWidget(self.emptyLabel, 1, 1, alignment=QtCore.Qt.AlignCenter)
         self.uBarBoxGridLayout.addWidget(self.uBarGraphLabel, 2, 1, alignment=QtCore.Qt.AlignCenter)
 
         self.DuBarBoxGridLayout = QtWidgets.QGridLayout()
-        self.DuBarBoxGridLayout.addWidget(self.emptyLabel, 1, 1, alignment=QtCore.Qt.AlignCenter)
+        #self.DuBarBoxGridLayout.addWidget(self.emptyLabel, 1, 1, alignment=QtCore.Qt.AlignCenter)
         self.DuBarBoxGridLayout.addWidget(self.DuBarGraphLabel, 2, 1, alignment=QtCore.Qt.AlignCenter)
 
         ###############################################################################################
@@ -382,7 +380,7 @@ class LabView(QtWidgets.QMainWindow):
 
         ######################## {QFormLayout for Assay Buffer} AND {Assay Buffer Graph} #######################
 
-        self.assayBufferGraph = Graph(180, 3)
+        """self.assayBufferGraph = Graph(180, 3)
         self.assayBufferGraph.setLabel(axis='left', text = 'CO2 (µL)')
         self.assayBufferGraph.setLabel(axis='bottom', text = 'Voltage (mV)')
         self.assayBufferGraph.getViewBox().wheelEvent = self.on_wheel_event
@@ -392,7 +390,7 @@ class LabView(QtWidgets.QMainWindow):
 
         self.assayBufferGraphBoxGridVLayout = QtWidgets.QVBoxLayout()
         self.assayBufferGraphBoxGridVLayout.addLayout(self.assayBufferBoxGridLayout)
-        self.assayBufferGraphBoxGridVLayout.addLayout(self.assayBufferGraphVLayout)
+        self.assayBufferGraphBoxGridVLayout.addLayout(self.assayBufferGraphVLayout)"""
         #################################################################################################
 
 
@@ -430,7 +428,7 @@ class LabView(QtWidgets.QMainWindow):
         # {{QFormLayout for Assay Buffer} AND {Assay Buffer Graph}} AND {{Concentration Label} AND {Concentration Graph}} AND {{Concentration Label} AND {Concentration Graph}} #
 
         self.calculatedPlotsHLayout = QtWidgets.QHBoxLayout()
-        self.calculatedPlotsHLayout.addLayout(self.assayBufferGraphBoxGridVLayout)
+        #self.calculatedPlotsHLayout.addLayout(self.assayBufferGraphBoxGridVLayout)
         self.calculatedPlotsHLayout.addLayout(self.uBarGraphBoxGridVLayout)
         self.calculatedPlotsHLayout.addLayout(self.DuBarGraphBoxGridVLayout)
 
@@ -465,7 +463,7 @@ class LabView(QtWidgets.QMainWindow):
 
         ######################## O2 Zero and CO2 cal #############################
 
-        # Initializing all the buttons
+        """# Initializing all the buttons
         self.o2CalibrateButton = Button("O2 Cal", 120, 26)
         self.o2ZeroButton = Button("O2 Zero", 120, 26)
 
@@ -557,7 +555,7 @@ class LabView(QtWidgets.QMainWindow):
         self.o2GridLayout.addWidget(self.o2TemperatureLineEdit, 3, 2, alignment=QtCore.Qt.AlignCenter)
         self.o2GridLayout.setContentsMargins(125, 5, 125, 0)
         
-        
+        """
         #################################################################################################
 
         #################################################################################################
@@ -633,8 +631,8 @@ class LabView(QtWidgets.QMainWindow):
         self.tableVelocityConcentrationAddPurgeHLayout.setContentsMargins(125,0,50,0)
 
         self.calculationButtonsFrameHLayout = QtWidgets.QHBoxLayout()
-        self.calculationButtonsFrameHLayout.addLayout(self.co2ZeroCo2CalGridLayout)
-        self.calculationButtonsFrameHLayout.addLayout(self.o2GridLayout)
+        #self.calculationButtonsFrameHLayout.addLayout(self.co2ZeroCo2CalGridLayout)
+        #self.calculationButtonsFrameHLayout.addLayout(self.o2GridLayout)
         self.calculationButtonsFrameHLayout.addLayout(self.tableVelocityConcentrationAddPurgeHLayout)
 
         self.calculationButtonsFrame.setLayout(self.calculationButtonsFrameHLayout)
@@ -695,9 +693,11 @@ class LabView(QtWidgets.QMainWindow):
 
         # Initializing the mean bars.
         self.meanBar = pg.LinearRegionItem(values=(0, 1), orientation='vertical', brush=None, pen=None, hoverBrush=None, hoverPen=None, movable=True, bounds=None, span=(0, 1), swapMode='sort', clipItem=None)
+        self.meanBar2 = pg.LinearRegionItem(values=(0, 1), orientation='vertical', brush=None, pen=None, hoverBrush=None, hoverPen=None, movable=True, bounds=None, span=(0, 1), swapMode='sort', clipItem=None)
         
         # Adding the Mean bars when the plotting is paused
         self.realTimeGraph.addItem(self.meanBar)
+        self.DuBarGraph.addItem(self.meanBar2)
 
 
     def connectUItoMethods(self):
@@ -733,12 +733,12 @@ class LabView(QtWidgets.QMainWindow):
         # self.o2ZeroButton.clicked.connect(lambda: self.o2ZeroButtonPressed())
 
         # O2 Assay Buffer Zero LineEdit text edited connect method
-        self.o2ZeroLineEdit.returnPressed.connect(lambda: self.OnEditedO2AssayCal())
+        #self.o2ZeroLineEdit.returnPressed.connect(lambda: self.OnEditedO2AssayCal())
 
         # Temperature Lineedir text edited connect method
-        self.temperatureLineEdit.returnPressed.connect(lambda: self.OnEditedTemp())
+        #self.temperatureLineEdit.returnPressed.connect(lambda: self.OnEditedTemp())
 
-        # CO2 Cal buttons connect method
+        """# CO2 Cal buttons connect method
         self.co2CalZeroButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.co2CalZeroLineEdit, 3, 0, 0))
         self.co2Cal1ulButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.co2Cal1ulLineEdit, 3, 0, 1))
         self.co2Cal2ulButton.clicked.connect(lambda: self.GraphMeanButtonPressed(self.co2Cal2ulLineEdit, 3, 0, 2))
@@ -760,7 +760,7 @@ class LabView(QtWidgets.QMainWindow):
         # CO2 Zero button connect method
         self.co2ZeroButton.clicked.connect(self.co2ZeroButtonPressed)
         self.co2SampleButton.clicked.connect(self.co2SampleButtonPressed)
-
+        """
         # Add to Table connect method
         self.addToTableButton.clicked.connect(self.addToTableButtonPressed)
 
@@ -1013,7 +1013,7 @@ class LabView(QtWidgets.QMainWindow):
                 # set intercept line edit
                 self.intercept1LineEdit.setText(str(round(intercept, 4)))
                 self.co2Cal3ulLineEdit
-        #if lineedit is co2 cal 3, then compute the co2/volt line        
+        """#if lineedit is co2 cal 3, then compute the co2/volt line        
         if (lineEdit == self.co2Cal3ulLineEdit):
             num = Calculations.calculateCo2OverVolt(float(self.co2CalZeroLineEdit.text()), 
                                                     float(self.co2Cal1ulLineEdit.text()), 
@@ -1022,7 +1022,7 @@ class LabView(QtWidgets.QMainWindow):
             if(num == -99999): #num that is returned if num is undefinable
                 self.throwUndefined(self.co2VoltLineEdit)
             else:
-                self.co2VoltLineEdit.setText(str(round(num, 10)))
+                self.co2VoltLineEdit.setText(str(round(num, 10)))"""
 
 
 
@@ -1307,8 +1307,7 @@ class LabView(QtWidgets.QMainWindow):
 
         # y = [y1,y2,y3,y4,y5,y6,y7,y8]
         y_value = [[],[],[],[],[],[],[],[]]
-        ubar_y_value = []
-        dubar_y_value = []
+
         a49percent_y = [] #run y values through atom percent calculator, return transformed value to plot on atom49% graph
         da49percent_y = [] #calculate rate of change of a49percent and then plot
         last_a49 = 0
@@ -1341,49 +1340,6 @@ class LabView(QtWidgets.QMainWindow):
 
             da49percent_y.append(last_a49 - current_a49) #plot the change in a49percent
             last_a49 = current_a49
-            # print(x_value, y_value)
-            # x_value, y_value = self.getNextPoint(self.dataObj)
-
-            # Transform to reflect uBar
-
-            temp_y = y.copy()
-            co2Volt = 0
-            co2Zero = 0
-
-            if self.co2VoltLineEdit.text():
-                co2Volt = float(self.co2VoltLineEdit.text())
-
-            if self.co2ZeroLineEdit.text():
-                co2Zero = float(self.co2ZeroLineEdit.text())
-            
-            #print("Percent CO2 params:", co2Volt, y[3], co2Zero)
-            
-            percentCo2 = Calculations.calculatePercentCO2(co2Volt, y[3], co2Zero)
-            uBarCO2 = Calculations.calculateUbarCO2(percentCo2)
-            #print("UbarCO2: ", uBarCO2)
-            temp_y[3] = uBarCO2
-            #print(y[3])
-            #print(temp_y[3])
-            ubar_y_value.append(temp_y[3])
-            #print("ubar len: ",len(ubar_y_value))
-
-
-            #for i in range(len(ubar_y_value)):
-                #ubar_y_value[i].append(temp_y[i])
-
-            dubar_y_value.append(self.lastUbar - temp_y[3])
-            self.lastUbar = temp_y[3]
-        # Updating all the curves
-        # start = time()
-        
-        self.checkMinMax(min(y), max(y), 0)
-        self.checkMinMax(min(ubar_y_value), max(ubar_y_value), 1)
-        self.checkMinMax(min(dubar_y_value), max(dubar_y_value), 2)
-                
-        
-        self.changeGraphRange(x)
-        #self.changeGraphRange2(x, self.uBarGraph, ubar_y_value)
-        #self.changeGraphRange2(x, self.DuBarGraph, dubar_y_value)
         
         # mass| y-value
         # 32  | 0 
