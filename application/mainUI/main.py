@@ -1084,7 +1084,7 @@ class LabView(QtWidgets.QMainWindow):
         to the mean. Updates the o2 zero display accordingly.
         """
         # Set mean value from mean bars on the Mass 32 graph
-        self.meanButtonPressed(self.o2ZeroLineEdit, 1)
+        self.meanButtonPressed(self.o2ZeroLineEdit, 0)
         self.o2Zero = float(self.o2ZeroLineEdit.text())
         
         
@@ -1126,7 +1126,6 @@ class LabView(QtWidgets.QMainWindow):
         
         # calculate O2 air value given the temperature
         self.o2Air = Calculations.calculateO2Air(self.o2Temperature)
-        print(self.o2Air)
         
         # O2 calibration calculation
         self.o2Calibration = Calculations.calculateO2Cal(self.o2Air, self.o2Zero)
@@ -1139,7 +1138,7 @@ class LabView(QtWidgets.QMainWindow):
         """
         
         # obtain avrage of mass 32 to be used in the calculation
-        self.meanButtonPressed(self.o2AverageLineEdit, 1)
+        self.meanButtonPressed(self.o2AverageLineEdit, 0)
         self.o2Measured = float(self.o2AverageLineEdit.text())
         
         # calculate uBar O2 concentration
@@ -1180,9 +1179,10 @@ class LabView(QtWidgets.QMainWindow):
         newRowPosition = self.table.rowCount()
         self.table.insertRow(newRowPosition)
 
-        # set values in row (%CO@, uBar CO2)
+        # set values in row (%CO@, uBar CO2, uBar O2)
         self.table.setItem(newRowPosition, 0, QtWidgets.QTableWidgetItem(str(round(self.percentCO2, 4))))
         self.table.setItem(newRowPosition, 1, QtWidgets.QTableWidgetItem(str(round(self.uBarCO2, 4))))
+        self.table.setItem(newRowPosition, 2, QtWidgets.QTableWidgetItem(str(round(self.uBarO2, 4))))
             
 
     def purgeTableButtonPressed(self):
