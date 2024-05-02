@@ -2,39 +2,19 @@
 
 ## Project summary
 
-### One-sentence description of the project
-
 The Photosynthesis Lab has a fully functional dashboard used to enable experimentation involving varying gases and biological reactions, but the lab requires further development on this application in order to improve features, add functionality, and filter data from new devices. 
-
-### Additional information about the project
-
-TODO: Write a compelling/creative/informative project description / summary
 
 ## Installation
 
-### Prerequisites
+## Prerequisites
 
 * Python3
 * Modules detailed in [requirements.txt](https://github.com/WSUCptSCapstone-F23-S24/wsub-pythondesktopapp/blob/master/application/requirements.txt)
 
-### Add-ons
+## Executables
+Please view the link below to download executables for each module. You can find the source-code for each module under their respective branches.
+https://drive.google.com/drive/folders/1FnxfxILwdB6EZX-hvX77pBAgq6NYFRuU?usp=sharing
 
-TODO: List which add-ons are included in the project, and the purpose each add-on serves in your app.
-
-### Installation Steps
-
-
-
-## Functionality
-
-TODO: Write usage instructions. Structuring it as a walkthrough can help structure this section,
-and showcase your features.
-
-
-## Known Problems
-
-TODO: Describe any known issues, bugs, odd behaviors or code smells. 
-Provide steps to reproduce the problem and/or name a file or a function where the problem lives.
 
 ## Additional Documentation
 
