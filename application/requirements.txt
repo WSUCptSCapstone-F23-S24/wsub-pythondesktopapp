@@ -1,5 +1,8 @@
-PyQt5
-pyqtgraph
-numpy
+serial
 pandas
-watchdog
+matplotlib.pyplot
+struct
+numpy
+numpy.lib.function_base
+datetime
+os
