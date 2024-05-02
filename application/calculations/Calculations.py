@@ -148,4 +148,24 @@ class Calculations:
             return concentrations[0] - (slope * voltages[0])
         else:
             return 0
+        
+    def calculateAtom49(y):
+        """
+        Calculates atom%49 from y_values, return y value to plot on atom49% graph. (likely graph2)
+        """
+        # mass| y-value
+            # 32  | 0 
+            # 34  | 1
+            # 36  | 2
+            # 44  | 3
+            # 45  | 4
+            # 46  | 5
+            # 47  | 6
+            # 49  | 7
+        
+        #atom%49 = 49_mv / (45_mv + 47_mv + 49_mv)
+        atom49_percent = y[7] / (y[4] + y[6] + y[7])
+        ## increase the value by a factor of 100
+        atom49_percent = atom49_percent * 100
+        return atom49_percent
             
